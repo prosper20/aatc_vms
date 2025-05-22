@@ -1,4 +1,10 @@
 {
-    "Welcome to AATC VMS": "Barka da zuwa AATC VMS",
-    "This is an initial setup of the Laravel environment": "Wannan shi ne saiti na farko na yanayin Laravel"
-}
+    "Login": "Shiga",
+    "Staff ID": "Lambar ma'aikata",
+    "Password": "Kalmar sirri",
+    "Contact support": "Tuntuɓi tallafi",
+    "Invalid credentials.": "Bayanan shiga ba daidai ba.",
+    "Abuja-AATC": "Abuja-AATC",
+    "Visitor Management Portal": "Dandalin Gudanar da Baƙi",
+    "Abuja-AATC Visitor Management Portal": "Dandalin Gudanar da Baƙi Abuja-AATC"
+  }

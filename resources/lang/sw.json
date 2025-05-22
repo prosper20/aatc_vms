@@ -1,4 +1,10 @@
 {
-    "Welcome to AATC VMS": "Karibu kwenye AATC VMS",
-    "This is an initial setup of the Laravel environment": "Hii ni usanidi wa awali wa mazingira ya Laravel"
-}
+    "Login": "Ingia",
+    "Staff ID": "Kitambulisho cha mfanyakazi",
+    "Password": "Nenosiri",
+    "Contact support": "Wasiliana na msaada",
+    "Invalid credentials.": "Taarifa zisizo sahihi.",
+    "Abuja-AATC": "Abuja-AATC",
+    "Visitor Management Portal": "Jukwaa la Usimamizi wa Wageni",
+    "Abuja-AATC Visitor Management Portal": "Jukwaa la Usimamizi wa Wageni Abuja-AATC"
+  }

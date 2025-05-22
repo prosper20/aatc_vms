@@ -89,19 +89,19 @@ return [
     |
     */
 
-    'available_locales' => [
-    'English'            => 'en',
-    'Arabic (Egypt)'     => 'ar_EG',
-    'Portuguese'         => 'pt',
-    'French'             => 'fr',
-    'Spanish'            => 'es',
-    'Mandarin (Chinese)' => 'zh_CN',
-    'Swahili'            => 'sw',
-    'Hausa'              => 'ha',
-    'Igbo'               => 'ig',
-    'Yoruba'             => 'yo',
-    'Zulu'               => 'zu',
-],
+   'available_locales' => [
+        'English'   => 'en',
+        'العربية'    => 'ar_EG',
+        'Português' => 'pt',
+        'Français'  => 'fr',
+        'Español'   => 'es',
+        '中文'        => 'zh_CN',
+        'Kiswahili' => 'sw',
+        'Hausa'     => 'ha',
+        'Igbo'      => 'ig',
+        'Yorùbá'    => 'yo',
+        'isiZulu'   => 'zu',
+    ],
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 

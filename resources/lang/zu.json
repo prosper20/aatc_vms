@@ -1,4 +1,10 @@
 {
-    "Welcome to AATC VMS": "Siyakwamukela ku-AATC VMS",
-    "This is an initial setup of the Laravel environment": "Lena yisethaphu yokuqala yendawo ye-Laravel"
-}
+    "Login": "Ngena",
+    "Staff ID": "Isazisi somsebenzi",
+    "Password": "Iphasiwedi",
+    "Contact support": "Xhumana nosizo",
+    "Invalid credentials.": "Izinkomba ezingalungile.",
+    "Abuja-AATC": "Abuja-AATC",
+    "Visitor Management Portal": "Iphothali Yokuphathwa Kwabavakashi",
+    "Abuja-AATC Visitor Management Portal": "Iphothali Yokuphathwa Kwabavakashi Abuja-AATC"
+  }
