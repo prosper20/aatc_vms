@@ -19,6 +19,7 @@
         <div class="container">
             <a class="navbar-brand" href="#">VMS</a>
             <div class="d-flex">
+                @include('partials/language_switcher')
                 @if (Route::has('login'))
                     <div class="ms-auto">
                         @auth
@@ -37,8 +38,8 @@
     </nav>
 
     <div class="container text-center mt-5">
-        <h1>Welcome to AATC VMS</h1>
-        <p class="lead">This is an initial setup of the Laravel environment</p>
+        <h1>{!! __('Welcome to AATC VMS') !!}</h1>
+        <p class="lead">{!! __('This is an initial setup of the Laravel environment') !!}</p>
     </div>
 </body>
 
