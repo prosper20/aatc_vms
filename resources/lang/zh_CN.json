@@ -1,4 +1,10 @@
 {
-    "Welcome to AATC VMS": "欢迎来到 AATC VMS",
-    "This is an initial setup of the Laravel environment": "这是 Laravel 环境的初始设置"
-}
+    "Login": "登录",
+    "Staff ID": "员工编号",
+    "Password": "密码",
+    "Contact support": "联系支持",
+    "Invalid credentials.": "凭证无效。",
+    "Abuja-AATC": "阿布贾-AATC",
+    "Visitor Management Portal": "访客管理门户",
+    "Abuja-AATC Visitor Management Portal": "阿布贾-AATC 访客管理门户"
+  }

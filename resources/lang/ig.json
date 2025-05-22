@@ -1,4 +1,10 @@
 {
-    "Welcome to AATC VMS": "Nnọọ na AATC VMS",
-    "This is an initial setup of the Laravel environment": "Nke a bụ ntọala mbụ nke gburugburu Laravel"
-}
+    "Login": "Banye",
+    "Staff ID": "Njirimara onye ọrụ",
+    "Password": "Okwuntughe",
+    "Contact support": "Kpọtụrụ nkwado",
+    "Invalid credentials.": "Ozi nbanye ezighi ezi.",
+    "Abuja-AATC": "Abuja-AATC",
+    "Visitor Management Portal": "Ụlọ ọrụ njikwa ọbịa",
+    "Abuja-AATC Visitor Management Portal": "Ụlọ ọrụ njikwa ọbịa Abuja-AATC"
+  }

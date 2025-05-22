@@ -1,12 +1,10 @@
 {
     "Login": "تسجيل الدخول",
-    "Email Address": "البريد الإلكتروني",
+    "Staff ID": "معرف الموظف",
     "Password": "كلمة المرور",
-    "Remember Me": "تذكرني",
-    "Forgot Your Password?": "هل نسيت كلمة المرور؟",
-    "Register": "إنشاء حساب",
-    "Name": "الاسم",
-    "Confirm Password": "تأكيد كلمة المرور",
-    "Welcome to AATC VMS": "مرحبًا بك في AATC VMS",
-    "This is an initial setup of the Laravel environment": "هذا هو الإعداد الأولي لبيئة Laravel"
-}
+    "Contact support": "اتصل بالدعم",
+    "Invalid credentials.": "بيانات الدخول غير صحيحة.",
+    "Abuja-AATC": "أبوجا - AATC",
+    "Visitor Management Portal": "بوابة إدارة الزوار",
+    "Abuja-AATC Visitor Management Portal": "بوابة إدارة الزوار أبوجا - AATC"
+  }
