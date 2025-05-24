@@ -1,545 +1,200 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ __('Dashboard - AFREXIMBANK') }}</title>
+@extends('layouts.app')
 
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
+@section('content')
+<div class="container min-w-full">
+    <!-- Header Section -->
+<div class="py-4 px-6 mb-6 my-6 ">
+    <div class="flex items-center justify-between">
+        <!-- Logo -->
+        <img src="{{ asset('assets/logo-green-yellow.png') }}" alt={{__("Logo")}} class="h-10 md:h-12">
 
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!-- Hamburger Icon for Mobile -->
+        <button id={{__("menuToggle")}} class="md:hidden text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <div class="mt-4 md:mt-0 md:flex md:items-center md:justify-end md:gap-4 hidden md:block">
+            @include('partials.language_switcher')
 
-  <style>
-    :root {
-      --primary: #07AF8B;
-      --accent: #FFCA00;
-      --deep: #007570;
-      --bg: #f4f6f8;
-      --text-dark: #1f2d3d;
-    }
+            <div class="text-right mt-4 md:mt-0">
+                <div><strong>{{ $staff->name }}</strong></div>
+                <div>{{ __('Location') }}: <strong>{{ __('Abuja') }}</strong></div>
+            </div>
 
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text-dark);
-    }
-
-    a {
-      text-decoration: none;
-      color: var(--primary);
-    }
-
-    .container {
-      padding: 1rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: white;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .topbar img {
-      height: 45px;
-    }
-
-    .user-section {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .user-icon {
-      font-size: 30px;
-      color: var(--deep);
-    }
-
-    .new-request-btn {
-      background: var(--accent);
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-weight: bold;
-      color: #;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .new-request-btn:hover {
-      background: #f0b800;
-    }
-
-    .main {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .left-panel,
-    .right-panel {
-      flex: 1 1 350px;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .new-request-box {
-      background: var(--primary);
-      height: 180px;
-      border-radius: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      padding: 1rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .new-request-btn a {
-  color: black;
-  text-decoration: none;
-}
-
-    .notifications,
-    .my-requests {
-      background: white;
-      border-radius: 12px;
-      padding: 1rem 1.5rem;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-    }
-
-    .notifications ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .notifications li {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      font-size: 14px;
-    }
-
-    .summary-header {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .tabs button {
-      border: none;
-      background: #eee;
-      padding: 0.4rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .tabs .active {
-      background: var(--deep);
-      color: white;
-    }
-
-    .stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .stat-card {
-      flex: 1 1 100px;
-      padding: 1rem;
-      border-radius: 12px;
-      color: white;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .gray { background: #6c757d; }
-    .green { background: var(--primary); }
-    .red { background: #b00020; }
-
-    .my-requests table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    th {
-      background: var(--primary);
-      color: white;
-      text-align: left;
-      padding: 0.6rem;
-    }
-
-    td {
-      padding: 0.6rem;
-      border-bottom: 1px solid #eee;
-    }
-
-    .badge {
-      background: var(--primary);
-      color: white;
-      border-radius: 6px;
-      padding: 0.2rem 0.6rem;
-      font-size: 12px;
-    }
-
-    .search-box {
-      padding: 0.4rem;
-      border: 0px solid #ccc;
-      border-radius: 6px;
-      width: 100%;
-      margin-top: 1rem;
-    }
-
-    .search-box i { position: absolute; left: 15px; top: 10px; color: #6c757d; }
-
-
-    @media (max-width: 768px) {
-      .topbar,
-      .user-section {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .search-box {
-        width: 100%;
-      }
-    }
-
-    .request-content {
-  text-align: left;
-  color: white;
-  max-width: 600px;
-}
-
-.request-content h2 {
-  font-size: 20px;
-  margin-bottom: 0.5rem;
-}
-
-.request-content p {
-  font-size: 14px;
-  margin-bottom: 1rem;
-  line-height: 1.5;
-}
-
-.new-request-action {
-  display: inline-block;
-  background: var(--accent);
-  color: #000;
-  padding: 0.5rem 1.2rem;
-  border-radius: 8px;
-  font-weight: bold;
-  text-decoration: none;
-  transition: background 0.3s;
-}
-
-.new-request-action:hover {
-  background: #f0b800;
-}
-
-.scroll-box {
-  max-height: 170px; /* Adjust depending on your row height */
-  overflow-y: auto;
-}
-
-.accent { background: var(--accent); color: #000; }
-
-
-/* Add this to your existing CSS */
-.request-content {
-        text-align: left;
-        color: white;
-        max-width: 100%; /* Changed from 600px to 100% */
-        padding: 0 1rem; /* Add padding to prevent text from touching edges */
-        box-sizing: border-box; /* Include padding in width calculation */
-    }
-
-    .request-content h2 {
-        font-size: clamp(16px, 4vw, 20px); /* Responsive font size */
-        margin-bottom: 0.5rem;
-        word-wrap: break-word; /* Ensure long words break */
-        overflow-wrap: break-word; /* Alternative for better browser support */
-    }
-
-    .request-content p {
-        font-size: clamp(12px, 3vw, 14px); /* Responsive font size */
-        margin-bottom: 1rem;
-        line-height: 1.5;
-        word-wrap: break-word;
-    }
-
-    .new-request-box {
-        background: var(--primary);
-        min-height: 180px; /* Changed from height to min-height */
-        border-radius: 12px;
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        padding: 1rem;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    @media (max-width: 480px) {
-        .request-content {
-            padding: 0 0.5rem; /* Smaller padding on very small screens */
-        }
-
-        .request-content h2 {
-            line-height: 1.3; /* Tighter line height on small screens */
-        }
-    }
-
-/* Modal styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
-}
-
-.modal-content {
-  background-color: white;
-  margin: 10% auto;
-  padding: 20px;
-  border-radius: 8px;
-  width: 80%;
-  max-width: 600px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.close:hover {
-  color: black;
-}
-
-.modal-body {
-  margin-top: 20px;
-}
-
-.modal-row {
-  display: flex;
-  margin-bottom: 10px;
-}
-
-.modal-label {
-  font-weight: bold;
-  width: 150px;
-  color: var(--deep);
-}
-
-.modal-value {
-  flex: 1;
-}
-
-.clickable-row {
-  cursor: pointer;
-}
-
-.clickable-row:hover {
-  background-color: #f5f5f5;
-}
-
-.status-pending {
-  color: #FFA500;
-}
-.status-approved {
-  color: #07AF8B;
-}
-.status-rejected {
-  color: #b00020;
-}
-.status-checked_in {
-  color: #07AF8B;
-}
-.status-checked_out {
-  color: #6c757d;
-}
-  </style>
-</head>
-<body>
-
-<div class="topbar">
-  <img src="{{ asset('assets/logo-green-yellow.png') }}" alt="{{ __('Logo') }}" />
-  <div class="user-section">
-    <a href="{{ route('register_visitor') }}">{{ __('New request') }}</a>
-    <a href="{{ route('profile.update') }}">
-      <span class="material-icons user-icon" aria-label="{{ __('User profile') }}">account_circle</span>
-    </a>
-    <div class="user-info">
-      <strong>{{ $employee->name }}</strong><br>
-      {{ __('Location') }}: <strong>{{ __('Abuja') }}</strong>
+            <form method="POST" action="{{ route('logout') }}" class="mt-4 md:mt-0">
+                @csrf
+                <button
+                    class="bg-gray-400 md:bg-yellow-400 hover:bg-yellow-300 text-black font-bold py-2 px-4 rounded w-full md:w-auto">
+                    {{ __('Logout') }}
+                </button>
+            </form>
+        </div>
     </div>
-    <form method="POST" action="{{ route('logout') }}">
-      @csrf
-      <button class="new-request-btn" type="submit">{{ __('Logout') }}</button>
-    </form>
-  </div>
+
+    <!-- Collapsible Menu -->
+    <div id="mobileMenu" class="md:hidden mt-4 md:mt-0 md:flex md:items-center md:justify-end md:gap-4 hidden md:block">
+        @include('partials.language_switcher')
+
+        <div class="text-right mt-4 md:mt-0">
+            <div><strong>{{ $staff->name }}</strong></div>
+            <div>{{ __('Location') }}: <strong>{{ __('Abuja') }}</strong></div>
+        </div>
+
+        <form method="POST" action="{{ route('logout') }}" class="mt-4 md:mt-0">
+            @csrf
+            <button
+                class="bg-gray-400 md:bg-yellow-400 hover:bg-yellow-300 text-black font-bold py-2 px-4 rounded w-full md:w-auto">
+                {{ __('Logout') }}
+            </button>
+        </form>
+    </div>
 </div>
 
-<div class="container">
 
-  <div class="notifications">
-    <h5>{{ __('Notifications') }}</h5>
-    <ul>
-      @foreach ($notifications as $note)
-        <li>
-          <span>
-            <span class="material-icons" style="color: var(--primary);">
-              {{ $note->status === 'approved' ? 'check_circle' : 'cancel' }}
-            </span>
-            {{ $note->name }} {{ __($note->status) }}.
-          </span>
-          <span class="timestamp">{{ $note->updated_at->format('g:iA\<\b\\r\>d/m/Y') }}</span>
-        </li>
-      @endforeach
-    </ul>
-  </div>
+    <!-- top -->
 
-  <div class="stats">
-    <div class="stat-card accent"><h1>{{ $stats['total_requests'] ?? 0 }}</h1><p>{{ __('Requests') }}</p></div>
-    <div class="stat-card green"><h1>{{ $stats['approved'] ?? 0 }}</h1><p>{{ __('Approved') }}</p></div>
-    <div class="stat-card gray"><h1>{{ $stats['declined'] ?? 0 }}</h1><p>{{ __('Declined') }}</p></div>
-  </div>
+    <div class="w-full py-6 px-4 md:px-8 bg-transparent">
+        <div class="w-full md:min-h-[250px] rounded-xl flex flex-col lg:flex-row gap-6 bg-transparent md:bg-[#07AF8B]">
+          <!-- Left Column -->
+          <div class="w-full lg:w-2/3 space-y-6">
+            <div class="bg-[#07AF8B] md:bg-transparent rounded-xl  p-6 shadow-md md:shadow-none flex justify-center items-end min-h-[180px]">
+                <div class="text-white text-left max-w-full px-4">
+                  <h2 class="text-3xl font-bold mb-2">{{__("Book visitors into Abuja AATC facilities")}}</h2>
+                  <p class="text-lg mb-4 leading-relaxed">{{__("Request for entry permit for business associates and partners from the comfort of your office and get real-time notifications on the progress of your request.")}}</p>
+                  <div class="block md:inline-block text-center w-full md:w-auto ">
+                    <a href="{{ route('register_visitor') }}" class="bg-[#FFCA00] hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition-colors w-full md:w-auto inline-block">
+                        {{__("New Request")}}
+                    </a>
+                  </div>
+                </div>
+              </div>
+          </div>
 
-  <div class="my-requests">
-    <h5>{{ __('My Requests') }}</h5>
-    <form method="GET" action="{{ route('home') }}" style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem;">
-        <input type="text" name="search" class="search-box" placeholder="{{ __('Search visitors...') }}" value="{{ $search }}">
-        <button type="submit" class="new-request-btn" style="padding:0.5rem 1rem;">{{ __('Search') }}</button>
-        @if($search)
-            <a href="{{ route('home') }}" style="color: var(--primary);">{{ __('Clear') }}</a>
-        @endif
-    </form>
+          <!-- Right Column -->
+          <div class="w-full lg:w-1/3 md:flex md:items-center md:justify-center md:pr-6">
+            {{-- STAT CARDS --}}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-[#FFCA00] text-black rounded-xl p-6 shadow-md text-center">
+                  <h1 class="text-3xl font-bold">{{ $stats['total_requests'] ?? 0 }}</h1>
+                  <p class="text-sm mt-2">{{ __('Total Requests') }}</p>
+                </div>
+                <div class="bg-[#07AF8B] md:bg-[#05896D] text-white rounded-xl p-6 shadow-md text-center">
+                  <h1 class="text-3xl font-bold">{{ $stats['approved'] ?? 0 }}</h1>
+                  <p class="text-sm mt-2">{{ __('Approved') }}</p>
+                </div>
+                <div class="bg-[#6c757d] text-white rounded-xl p-6 shadow-md text-center">
+                  <h1 class="text-3xl font-bold">{{ $stats['declined'] ?? 0 }}</h1>
+                  <p class="text-sm mt-2">{{ __('Declined') }}</p>
+                </div>
+              </div>
+            </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>{{ __('Visitor Name') }}</th>
-                <th>{{ __('Visitor ID') }}</th>
-                <th>{{ __('Request Date') }}</th>
-                <th>{{ __('Status') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($requests as $request)
-                <tr class="clickable-row" onclick="openModal({{ $request->id }})" title="{{ __('Click to view details') }}">
-                    <td>{{ $request->visitor->name ?? 'N/A' }}</td>
-                    <td>{{ $request->unique_code }}</td>
-                    <td>{{ \Carbon\Carbon::parse($request->visit_date)->format('d/m/Y g:i A') }}</td>
-                    <td>
-                        @php $status = strtolower($request->status); @endphp
-                        @if($status === 'approved')
-                            <span class="status-approved">{{ __('Approved') }}</span>
-                        @elseif($status === 'pending')
-                            <span class="status-pending">{{ __('Pending') }}</span>
-                        @elseif(in_array($status, ['declined', 'rejected']))
-                            <span class="status-declined">{{ __('Declined') }}</span>
-                        @else
+          </div>
+      </div>
+
+    <!-- bottom -->
+
+    <div class="w-full py-6 px-4 md:px-8 bg-transparent">
+        <div class="flex flex-col lg:flex-row gap-6">
+          <!-- Left Column -->
+          <div class="w-full lg:w-1/2 space-y-6">
+
+            {{-- NOTIFICATIONS --}}
+            <div class="bg-white rounded-xl shadow-md p-6">
+              <h2 class="text-lg font-semibold mb-4">{{ __('Notifications') }}</h2>
+              @if ($notifications->isEmpty())
+    <div class="text-center text-gray-500 text-sm">
+      {{ __('No notifications yet.') }}
+    </div>
+  @else
+    <ul class="space-y-3">
+                @foreach ($notifications as $note)
+                  <li class="flex justify-between items-center text-sm">
+                    <div class="flex items-center space-x-2">
+                      <span class="material-icons text-[#07AF8B] text-base">
+                        {{ $note->status === 'approved' ? 'check_circle' : 'cancel' }}
+                      </span>
+                      <span>{{ $note->name }} {{ __($note->status) }}.</span>
+                    </div>
+                    <span class="text-gray-500">{{ $note->updated_at->format('g:iA d/m/Y') }}</span>
+                  </li>
+                @endforeach
+              </ul>
+  @endif
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="container">
+
+            {{-- SEARCH + REQUEST TABLE --}}
+            <div class="bg-white rounded-xl shadow-md p-6">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                <h2 class="text-lg font-semibold">{{ __('My Requests') }}</h2>
+                <form method="GET" action="{{ route('home') }}" class="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+                  <input type="text" name="search" class="w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="{{ __('Search visitors...') }}" value="{{ $search }}">
+                  <div class="flex gap-2">
+                    <button type="submit" class="bg-[#FFCA00] hover:bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg text-sm">{{ __('Search') }}</button>
+                    @if($search)
+                      <a href="{{ route('home') }}" class="text-[#07AF8B] text-sm">{{ __('Clear') }}</a>
+                    @endif
+                  </div>
+                </form>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                  <thead>
+                    <tr class="bg-[#07AF8B] text-white">
+                      <th class="text-left p-3">{{ __('Visitor') }}</th>
+                      <th class="text-left p-3">{{ __('Date') }}</th>
+                      <th class="text-left p-3">{{ __('Purpose') }}</th>
+                      <th class="text-left p-3">{{ __('Status') }}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    @forelse ($requests as $request)
+                      <tr class="hover:bg-gray-50 cursor-pointer" onclick="openModal({{ $request->id }})">
+                        <td class="p-3">{{ $request->visitor->name ?? 'N/A' }}</td>
+                        <td class="p-3">{{ $request->unique_code }}</td>
+                        <td class="p-3">{{ \Carbon\Carbon::parse($request->visit_date)->format('d/m/Y g:i A') }}</td>
+                        <td class="p-3">
+                          @php $status = strtolower($request->status); @endphp
+                          @if($status === 'approved')
+                            <span class="text-[#07AF8B] font-semibold">{{ __('Approved') }}</span>
+                          @elseif($status === 'pending')
+                            <span class="text-[#FFA500] font-semibold">{{ __('Pending') }}</span>
+                          @elseif(in_array($status, ['declined', 'rejected']))
+                            <span class="text-[#b00020] font-semibold">{{ __('Declined') }}</span>
+                          @else
                             <span>{{ __($request->status) }}</span>
-                        @endif
-                    </td>
-                </tr>
-            @empty
-                <tr><td colspan="4">{{ __('No requests found.') }}</td></tr>
-            @endforelse
-        </tbody>
-    </table>
+                          @endif
+                        </td>
+                      </tr>
+                    @empty
+                      <tr>
+                        <td colspan="4" class="p-3 text-center text-gray-500">{{ __('No requests found.') }}</td>
+                      </tr>
+                    @endforelse
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+        </div>
+      </div>
+
 </div>
-
-
-</div>
-
-<div id="requestModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle" aria-describedby="modalDesc">
-  <div class="modal-content" role="document">
-    <button class="close" aria-label="{{ __('Close modal') }}" onclick="closeModal()">&times;</button>
-    <h3 id="modalTitle">{{ __('Request Details') }}</h3>
-    <div id="modalBody" aria-live="polite" aria-atomic="true">
-      <p>{{ __('Loading details...') }}</p>
-    </div>
-  </div>
-</div>
-
 <script>
-  const requestsData = @json($requests->keyBy('id'));
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
 
-  function openModal(requestId) {
-    const modal = document.getElementById('requestModal');
-    const modalBody = document.getElementById('modalBody');
-    const request = requestsData[requestId];
-
-    if (!request) {
-      modalBody.innerHTML = '<p>{{ __("Request data not found.") }}</p>';
-      modal.style.display = 'block';
-      modal.setAttribute('aria-hidden', 'false');
-      return;
-    }
-
-    let content = `
-      <div class="modal-row"><span class="modal-label">{{ __('Visitor Name') }}:</span><span class="modal-value">${request.name}</span></div>
-      <div class="modal-row"><span class="modal-label">{{ __('Visitor ID') }}:</span><span class="modal-value">${request.unique_code}</span></div>
-      <div class="modal-row"><span class="modal-label">{{ __('Request Date') }}:</span><span class="modal-value">${new Date(request.visit_date).toLocaleString()}</span></div>
-      <div class="modal-row"><span class="modal-label">{{ __('Status') }}:</span><span class="modal-value">${request.status.charAt(0).toUpperCase() + request.status.slice(1)}</span></div>
-      <div class="modal-row"><span class="modal-label">{{ __('Purpose') }}:</span><span class="modal-value">${request.reason || '{{ __("N/A") }}'}</span></div>
-      <div class="modal-row"><span class="modal-label">{{ __('Created At') }}:</span><span class="modal-value">${new Date(request.created_at).toLocaleString()}</span></div>
-      <div class="modal-row"><span class="modal-label">{{ __('Updated At') }}:</span><span class="modal-value">${new Date(request.updated_at).toLocaleString()}</span></div>
-    `;
-
-    modalBody.innerHTML = content;
-    modal.style.display = 'block';
-    modal.setAttribute('aria-hidden', 'false');
-  }
-
-  function closeModal() {
-    const modal = document.getElementById('requestModal');
-    modal.style.display = 'none';
-    modal.setAttribute('aria-hidden', 'true');
-  }
-
-  window.onclick = function(event) {
-    const modal = document.getElementById('requestModal');
-    if (event.target === modal) {
-      closeModal();
-    }
-  };
-
-  window.addEventListener('keydown', function(e) {
-    if (e.key === "Escape") {
-      closeModal();
-    }
-  });
+    menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
 </script>
 
-</body>
-</html>
+@endsection

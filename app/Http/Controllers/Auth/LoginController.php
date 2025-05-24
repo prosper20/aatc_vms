@@ -25,11 +25,11 @@ class LoginController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (Auth::guard('employee')->attempt($credentials)) {
-            $employee = Auth::guard('employee')->user();
-            session(['employee_id' => $employee->id, 'name' => $employee->name]);
+        if (Auth::guard('staff')->attempt($credentials)) {
+            $staff = Auth::guard('staff')->user();
+            session(['staff_id' => $staff->id, 'name' => $staff->name]);
 
-            return $employee->profile_completed == 0
+            return $staff->profile_completed == 0
                 ? redirect('/update-profile')
                 : redirect('/home');
         }

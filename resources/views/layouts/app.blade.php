@@ -15,39 +15,20 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        /* General page styles */
-        body {
-            margin: 0;
-            font-family: 'Nunito', sans-serif;
-            background-color: #f9f9f9;
-        }
-
-        /* Main content padding */
-        .main-content {
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-        }
-
-        /* Language switcher CSS */
-        .language-switcher-container {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 10;
-        }
-    </style>
-    @stack('styles')
 </head>
-<body>
-    <div id="app">
-        <div class="language-switcher-container">
-            @include('partials.language_switcher')
-        </div>
+<body class="m-0 font-sans bg-gray-100 font-nunito relative w-full">
 
-        <main class="main-content">
+    <div id="app">
+        <!-- Language Switcher Positioned Top-Right -->
+        {{-- <div class="absolute top-5 right-5 z-10">
+            @include('partials.language_switcher')
+        </div> --}}
+
+        <!-- Main Content Area -->
+        <main class="main-content w-full">
             @yield('content')
         </main>
     </div>
+
 </body>
 </html>

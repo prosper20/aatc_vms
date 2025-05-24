@@ -6,5 +6,38 @@
     "Invalid credentials.": "Credenciales inválidas.",
     "Abuja-AATC": "Abuja-AATC",
     "Visitor Management Portal": "Portal de gestión de visitantes",
-    "Abuja-AATC Visitor Management Portal": "Portal de gestión de visitantes de Abuja-AATC"
+    "Abuja-AATC Visitor Management Portal": "Portal de gestión de visitantes de Abuja-AATC",
+
+    "Logo": "Logo",
+  "Toggle menu": "Mostrar menú",
+  "Location": "Ubicación",
+  "Logout": "Cerrar sesión",
+
+  "Book visitors into Abuja AATC facilities": "Registrar visitantes en las instalaciones de Abuja AATC",
+  "Request for entry permit for business associates and partners from the comfort of your office and get real-time notifications on the progress of your request.": "Solicite un permiso de entrada para socios y asociados desde la comodidad de su oficina y reciba notificaciones en tiempo real sobre el progreso de su solicitud.",
+  "New Request": "Nueva solicitud",
+
+  "Total Requests": "Solicitudes totales",
+  "Approved": "Aprobado",
+  "Declined": "Rechazado",
+
+  "Notifications": "Notificaciones",
+  "No notifications yet.": "Aún no hay notificaciones.",
+
+  "was approved": "fue aprobado(a)",
+  "was declined": "fue rechazado(a)",
+
+  "My Requests": "Mis solicitudes",
+  "Search visitors...": "Buscar visitantes...",
+  "Search": "Buscar",
+  "Clear": "Limpiar",
+
+  "Visitor": "Visitante",
+  "Purpose": "Propósito",
+  "Date": "Fecha",
+  "Status": "Estado",
+  "Pending": "Pendiente",
+  "No requests found.": "No se encontraron solicitudes.",
+
+  "N/A": "N/D"
   }

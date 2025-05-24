@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Visit extends Model
 {
     protected $fillable = [
-        'visitor_id', 'employee_id', 'visit_date', 'reason', 'status', 'unique_code'
+        'visitor_id', 'staff_id', 'visit_date', 'reason', 'status', 'unique_code', 'floor_of_visit'
     ];
 
     public function visitor()
@@ -15,8 +15,8 @@ class Visit extends Model
         return $this->belongsTo(Visitor::class);
     }
 
-    public function employee()
+    public function staff()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(Staff::class);
     }
 }

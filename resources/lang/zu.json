@@ -6,5 +6,38 @@
     "Invalid credentials.": "Izinkomba ezingalungile.",
     "Abuja-AATC": "Abuja-AATC",
     "Visitor Management Portal": "Iphothali Yokuphathwa Kwabavakashi",
-    "Abuja-AATC Visitor Management Portal": "Iphothali Yokuphathwa Kwabavakashi Abuja-AATC"
+    "Abuja-AATC Visitor Management Portal": "Iphothali Yokuphathwa Kwabavakashi Abuja-AATC",
+
+    "Logo": "Ilogo",
+    "Toggle menu": "Guqula imenyu",
+    "Location": "Indawo",
+    "Logout": "Phuma",
+
+    "Book visitors into Abuja AATC facilities": "Bhalisela abavakashi ezakhiweni ze-Abuja AATC",
+    "Request for entry permit for business associates and partners from the comfort of your office and get real-time notifications on the progress of your request.": "Cela imvume yokungena yezihlobo zebhizinisi nabalingani usehhovisi lakho, uthole izaziso ngesikhathi sangempela ngenqubekela phambili yesicelo sakho.",
+    "New Request": "Isicelo esisha",
+
+    "Total Requests": "Izicelo eziphelele",
+    "Approved": "Kuvunyelwe",
+    "Declined": "Kunqatshiwe",
+
+    "Notifications": "Izaziso",
+    "No notifications yet.": "Azikho izaziso okwamanje.",
+
+    "was approved": "kuvunyelwe",
+    "was declined": "kunqatshiwe",
+
+    "My Requests": "Izicelo zami",
+    "Search visitors...": "Sesha abavakashi...",
+    "Search": "Sesha",
+    "Clear": "Sula",
+
+    "Visitor": "Isivakashi",
+    "Purpose": "Inhloso",
+    "Date": "Usuku",
+    "Status": "Isimo",
+    "Pending": "Kuselindile",
+    "No requests found.": "Azitholakalanga izicelo.",
+
+    "N/A": "Akusebenzi"
   }

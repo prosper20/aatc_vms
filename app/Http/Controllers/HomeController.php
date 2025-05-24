@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Visitor;
 use App\Models\Visit;
-use App\Models\Employee;
+use App\Models\Staff;
 use Illuminate\Support\Str;
 
 class HomeController extends Controller
@@ -13,7 +13,7 @@ class HomeController extends Controller
 
     public function __construct()
 {
-    $this->middleware('auth:employee');
+    $this->middleware('auth:staff');
 }
 
 public function submitRequest(Request $request)
@@ -26,7 +26,7 @@ public function submitRequest(Request $request)
         'purpose' => 'required|string',
     ]);
 
-    $employeeId = session('employee_id');
+    $staffId = session('staff_id');
 
     // Check if visitor already exists
     $visitor = Visitor::firstOrCreate(
@@ -41,7 +41,7 @@ public function submitRequest(Request $request)
     // Create a new visit record
     Visit::create([
         'visitor_id' => $visitor->id,
-        'employee_id' => $employeeId,
+        'staff_id' => $staffId,
         'visit_date' => $request->visit_date,
         'reason' => $request->purpose,
         'status' => 'Pending',
@@ -54,27 +54,27 @@ public function submitRequest(Request $request)
 
 public function index(Request $request)
 {
-    $employeeId = session('employee_id');
-    if (!$employeeId) return redirect('login');
+    $staffId = session('staff_id');
+    if (!$staffId) return redirect('login');
 
-    $employee = Employee::findOrFail($employeeId);
+    $staff = staff::findOrFail($staffId);
     $search = $request->input('search');
 
     $notifications = Visit::with('visitor')
-        ->where('employee_id', $employeeId)
+        ->where('staff_id', $staffId)
         ->whereIn('status', ['approved', 'rejected'])
         ->orderBy('updated_at', 'desc')
         ->limit(3)
         ->get();
 
     $stats = [
-        'total_requests' => Visit::where('employee_id', $employeeId)->count(),
-        'approved' => Visit::where('employee_id', $employeeId)->where('status', 'approved')->count(),
-        'declined' => Visit::where('employee_id', $employeeId)->where('status', 'rejected')->count(),
+        'total_requests' => Visit::where('staff_id', $staffId)->count(),
+        'approved' => Visit::where('staff_id', $staffId)->where('status', 'approved')->count(),
+        'declined' => Visit::where('staff_id', $staffId)->where('status', 'rejected')->count(),
     ];
 
     $requests = Visit::with('visitor')
-    ->where('employee_id', $employeeId)
+    ->where('staff_id', $staffId)
     ->when($search, function ($query) use ($search) {
         $query->whereHas('visitor', function ($q) use ($search) {
             $q->where('name', 'like', "%$search%")
@@ -85,7 +85,7 @@ public function index(Request $request)
     ->orderBy('created_at', 'desc')
     ->get();
 
-    return view('home', compact('employee', 'notifications', 'stats', 'requests', 'search'));
+    return view('home', compact('staff', 'notifications', 'stats', 'requests', 'search'));
 }
 
 
