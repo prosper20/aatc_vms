@@ -6,5 +6,38 @@
     "Invalid credentials.": "Awọn alaye wiwọle ti ko tọ.",
     "Abuja-AATC": "Abuja-AATC",
     "Visitor Management Portal": "Ẹnu-ọna Isakoso Alejo",
-    "Abuja-AATC Visitor Management Portal": "Ẹnu-ọna Isakoso Alejo Abuja-AATC"
+    "Abuja-AATC Visitor Management Portal": "Ẹnu-ọna Isakoso Alejo Abuja-AATC",
+
+    "Logo": "Ààmì ilé-iṣẹ",
+    "Toggle menu": "Yipada akojọ aṣayan",
+    "Location": "Ibùdó",
+    "Logout": "Jade",
+
+    "Book visitors into Abuja AATC facilities": "Forúkọsilẹ awọn alejo sinu awọn ohun-ini AATC Abuja",
+    "Request for entry permit for business associates and partners from the comfort of your office and get real-time notifications on the progress of your request.": "Bère fun ìyẹwọlé wọlé fún àwọn alábàápẹ̀jọ tàbí ọ̀rẹ́ iṣẹ́ rẹ látorí ọ́fiisi rẹ, kí o sì gba ìkìlọ̀ lẹsẹkẹsẹ nípa ìlera ìbéèrè rẹ.",
+    "New Request": "Ìbéèrè Tuntun",
+
+    "Total Requests": "Apapọ Ìbéèrè",
+    "Approved": "Tẹwọgba",
+    "Declined": "Kọ",
+
+    "Notifications": "Ìkìlọ̀",
+    "No notifications yet.": "Kò sí ìkìlọ̀ kankan fún báyìí.",
+
+    "was approved": "ni a fọwọsi",
+    "was declined": "ni a kọ",
+
+    "My Requests": "Àwọn Ìbéèrè Mi",
+    "Search visitors...": "Ṣàwárí àwọn alejo...",
+    "Search": "Ṣàwárí",
+    "Clear": "Ko",
+
+    "Visitor": "Alejo",
+    "Purpose": "Ìdí",
+    "Date": "Ọjọ́",
+    "Status": "Ìpò",
+    "Pending": "N dúró de ìmúlò",
+    "No requests found.": "Ko ri ìbéèrè kankan.",
+
+    "N/A": "Kò sí"
   }

@@ -6,5 +6,38 @@
     "Invalid credentials.": "凭证无效。",
     "Abuja-AATC": "阿布贾-AATC",
     "Visitor Management Portal": "访客管理门户",
-    "Abuja-AATC Visitor Management Portal": "阿布贾-AATC 访客管理门户"
+    "Abuja-AATC Visitor Management Portal": "阿布贾-AATC 访客管理门户",
+
+    "Logo": "标志",
+    "Toggle menu": "切换菜单",
+    "Location": "位置",
+    "Logout": "登出",
+
+    "Book visitors into Abuja AATC facilities": "为阿布贾 AATC 设施登记访客",
+    "Request for entry permit for business associates and partners from the comfort of your office and get real-time notifications on the progress of your request.": "在办公室轻松申请商业伙伴和合作者的入场许可，并实时获取申请进度通知。",
+    "New Request": "新请求",
+
+    "Total Requests": "请求总数",
+    "Approved": "已批准",
+    "Declined": "已拒绝",
+
+    "Notifications": "通知",
+    "No notifications yet.": "暂无通知。",
+
+    "was approved": "已被批准",
+    "was declined": "已被拒绝",
+
+    "My Requests": "我的请求",
+    "Search visitors...": "搜索访客...",
+    "Search": "搜索",
+    "Clear": "清除",
+
+    "Visitor": "访客",
+    "Purpose": "目的",
+    "Date": "日期",
+    "Status": "状态",
+    "Pending": "待处理",
+    "No requests found.": "未找到请求。",
+
+    "N/A": "不适用"
   }

@@ -6,5 +6,39 @@
     "Invalid credentials.": "بيانات الدخول غير صحيحة.",
     "Abuja-AATC": "أبوجا - AATC",
     "Visitor Management Portal": "بوابة إدارة الزوار",
-    "Abuja-AATC Visitor Management Portal": "بوابة إدارة الزوار أبوجا - AATC"
+    "Abuja-AATC Visitor Management Portal": "بوابة إدارة الزوار أبوجا - AATC",
+
+
+  "Logo": "الشعار",
+  "Toggle menu": "تبديل القائمة",
+  "Location": "الموقع",
+  "Logout": "تسجيل الخروج",
+
+  "Book visitors into Abuja AATC facilities": "احجز الزوار في مرافق أبوجا AATC",
+  "Request for entry permit for business associates and partners from the comfort of your office and get real-time notifications on the progress of your request.": "اطلب تصريح دخول لشركائك وزملائك في العمل من مكتبك واحصل على إشعارات فورية بحالة الطلب.",
+  "New Request": "طلب جديد",
+
+  "Total Requests": "إجمالي الطلبات",
+  "Approved": "تمت الموافقة",
+  "Declined": "مرفوض",
+
+  "Notifications": "الإشعارات",
+  "No notifications yet.": "لا توجد إشعارات حتى الآن.",
+
+  "was approved": "تمت الموافقة عليه",
+  "was declined": "تم رفضه",
+
+  "My Requests": "طلباتي",
+  "Search visitors...": "ابحث عن الزوار...",
+  "Search": "بحث",
+  "Clear": "مسح",
+
+  "Visitor": "الزائر",
+  "Purpose": "الغرض",
+  "Date": "التاريخ",
+  "Status": "الحالة",
+  "Pending": "قيد الانتظار",
+  "No requests found.": "لم يتم العثور على طلبات.",
+
+  "N/A": "غير متوفر"
   }

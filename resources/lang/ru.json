@@ -6,5 +6,31 @@
     "Invalid credentials.": "Неверные учетные данные.",
     "Abuja-AATC": "Abuja-AATC",
     "Visitor Management Portal": "Портал управления посетителями",
-    "Abuja-AATC Visitor Management Portal": "Портал управления посетителями Abuja-AATC"
+    "Abuja-AATC Visitor Management Portal": "Портал управления посетителями Abuja-AATC",
+    "Request for entry permit for business associates and partners from the comfort of your office and get real-time notifications on the progress of your request.": "Запросите пропуск для деловых партнеров и получайте уведомления о ходе рассмотрения в реальном времени.",
+    "New Request": "Новый запрос",
+
+    "Total Requests": "Всего запросов",
+    "Approved": "Одобрено",
+    "Declined": "Отклонено",
+
+    "Notifications": "Уведомления",
+    "No notifications yet.": "Пока нет уведомлений.",
+
+    "was approved": "было одобрено",
+    "was declined": "было отклонено",
+
+    "My Requests": "Мои запросы",
+    "Search visitors...": "Поиск посетителей...",
+    "Search": "Поиск",
+    "Clear": "Очистить",
+
+    "Visitor": "Посетитель",
+    "Purpose": "Цель",
+    "Date": "Дата",
+    "Status": "Статус",
+    "Pending": "В ожидании",
+    "No requests found.": "Запросов не найдено.",
+
+    "N/A": "Н/Д"
   }

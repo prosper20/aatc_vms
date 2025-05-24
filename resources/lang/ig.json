@@ -6,5 +6,38 @@
     "Invalid credentials.": "Ozi nbanye ezighi ezi.",
     "Abuja-AATC": "Abuja-AATC",
     "Visitor Management Portal": "Ụlọ ọrụ njikwa ọbịa",
-    "Abuja-AATC Visitor Management Portal": "Ụlọ ọrụ njikwa ọbịa Abuja-AATC"
+    "Abuja-AATC Visitor Management Portal": "Ụlọ ọrụ njikwa ọbịa Abuja-AATC",
+
+    "Logo": "Logo",
+    "Toggle menu": "Gbanwee menu",
+    "Location": "Ebe",
+    "Logout": "Pụọ",
+
+    "Book visitors into Abuja AATC facilities": "Debanye ndị ọbịa n'ime ụlọ ọrụ Abuja AATC",
+    "Request for entry permit for business associates and partners from the comfort of your office and get real-time notifications on the progress of your request.": "Rịọ maka ikike ịbanye maka ndị mmekọ azụmahịa site n'ofisi gị ma nata nkwupụta oge n’ezie gbasara mmepe arịrịọ gị.",
+    "New Request": "Arịrịọ ọhụrụ",
+
+    "Total Requests": "Arịrịọ niile",
+    "Approved": "Ekwenyere",
+    "Declined": "Ajụla",
+
+    "Notifications": "Nkwupụta",
+    "No notifications yet.": "Enweghị nkwupụta ugbu a.",
+
+    "was approved": "ekwenyela",
+    "was declined": "ajụla",
+
+    "My Requests": "Arịrịọ m",
+    "Search visitors...": "Chọwa ndị ọbịa...",
+    "Search": "Chọwa",
+    "Clear": "Hichapụ",
+
+    "Visitor": "Ọbịa",
+    "Purpose": "Ebumnuche",
+    "Date": "Ụbọchị",
+    "Status": "Ọnọdụ",
+    "Pending": "Na-eche",
+    "No requests found.": "Enweghị arịrịọ e hụrụ.",
+
+    "N/A": "N/A"
   }

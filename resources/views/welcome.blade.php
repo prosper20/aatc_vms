@@ -308,8 +308,53 @@
 </head>
 <body>
 
-  <!-- Page Loader -->
-  <div id="loader">
+    <div id="loader"><div class="spinner"></div></div>
+
+  <div class="container" style="display: none;" id="main-content">
+    <div class="language-switcher-container">@include('partials.language_switcher')</div>
+
+    <div class="left-side">
+      <div class="overlay-text">
+        <h1>{{ __('Abuja-AATC') }}</h1>
+        <h2>{{ __('Visitor Management Portal') }}</h2>
+      </div>
+    </div>
+
+    <div class="right-side">
+      <div id="toast">{{ $message ?? '' }}</div>
+
+      <div class="login-wrapper">
+        <div class="logo">
+          <a href="/"><img src="{{ asset('assets/logo-green-yellow.png') }}" alt="Company Logo" /></a>
+        </div>
+
+        <h2>{{ __('Login') }}</h2>
+
+        <form method="POST" action="{{ route('login') }}">
+          @csrf
+          <div class="form-group">
+            <label for="email"></label>
+            <i class="fas fa-user input-icon"></i>
+            <input type="email" name="email" id="email" required placeholder="{{ __('Staff ID') }}">
+          </div>
+
+          <div class="form-group">
+            <label for="password"></label>
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" name="password" id="password" required placeholder="{{ __('Password') }}">
+          </div>
+
+          <div class="forgot-password">
+            <a href="#">{{ __('Contact support') }}</a>
+          </div>
+
+          <button type="submit">{{ __('Login') }}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {{-- <div id="loader">
     <div class="spinner"></div>
   </div>
 
@@ -360,7 +405,7 @@
         </form>
       </div>
     </div>
-  </div>
+  </div> --}}
 
   <!-- Fade-in after load -->
   <script>

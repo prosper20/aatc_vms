@@ -6,5 +6,38 @@
     "Invalid credentials.": "Taarifa zisizo sahihi.",
     "Abuja-AATC": "Abuja-AATC",
     "Visitor Management Portal": "Jukwaa la Usimamizi wa Wageni",
-    "Abuja-AATC Visitor Management Portal": "Jukwaa la Usimamizi wa Wageni Abuja-AATC"
+    "Abuja-AATC Visitor Management Portal": "Jukwaa la Usimamizi wa Wageni Abuja-AATC",
+
+    "Logo": "Nembo",
+    "Toggle menu": "Badilisha menyu",
+    "Location": "Mahali",
+    "Logout": "Toka",
+
+    "Book visitors into Abuja AATC facilities": "Sajili wageni kwenye vituo vya Abuja AATC",
+    "Request for entry permit for business associates and partners from the comfort of your office and get real-time notifications on the progress of your request.": "Omba kibali cha kuingia kwa washirika wa biashara ukiwa ofisini kwako na upokee arifa za moja kwa moja kuhusu maendeleo ya ombi lako.",
+    "New Request": "Ombi Jipya",
+
+    "Total Requests": "Jumla ya Maombi",
+    "Approved": "Imeidhinishwa",
+    "Declined": "Imekataliwa",
+
+    "Notifications": "Arifa",
+    "No notifications yet.": "Hakuna arifa bado.",
+
+    "was approved": "limeidhinishwa",
+    "was declined": "limekataliwa",
+
+    "My Requests": "Maombi Yangu",
+    "Search visitors...": "Tafuta wageni...",
+    "Search": "Tafuta",
+    "Clear": "Futa",
+
+    "Visitor": "Mgeni",
+    "Purpose": "Madhumuni",
+    "Date": "Tarehe",
+    "Status": "Hali",
+    "Pending": "Inasubiri",
+    "No requests found.": "Hakuna maombi yaliyopatikana.",
+
+    "N/A": "Haipatikani"
   }

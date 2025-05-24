@@ -6,5 +6,38 @@
     "Invalid credentials.": "Bayanan shiga ba daidai ba.",
     "Abuja-AATC": "Abuja-AATC",
     "Visitor Management Portal": "Dandalin Gudanar da Baƙi",
-    "Abuja-AATC Visitor Management Portal": "Dandalin Gudanar da Baƙi Abuja-AATC"
+    "Abuja-AATC Visitor Management Portal": "Dandalin Gudanar da Baƙi Abuja-AATC",
+
+    "Logo": "Tambari",
+  "Toggle menu": "Buɗe menu",
+  "Location": "Wuri",
+  "Logout": "Fita",
+
+  "Book visitors into Abuja AATC facilities": "Yi rajistar baƙi zuwa cibiyoyin Abuja AATC",
+  "Request for entry permit for business associates and partners from the comfort of your office and get real-time notifications on the progress of your request.": "Nemi izinin shiga don abokan hulɗarka daga ofishinka kuma samu sanarwa kai tsaye kan ci gaban buƙatarka.",
+  "New Request": "Sabuwar buƙata",
+
+  "Total Requests": "Jimillar buƙatu",
+  "Approved": "An amince",
+  "Declined": "An ƙi",
+
+  "Notifications": "Sanarwa",
+  "No notifications yet.": "Babu sanarwa tukuna.",
+
+  "was approved": "an amince da shi",
+  "was declined": "an ƙi shi",
+
+  "My Requests": "Buƙatuna",
+  "Search visitors...": "Nemo baƙi...",
+  "Search": "Nemo",
+  "Clear": "Share",
+
+  "Visitor": "Baƙo",
+  "Purpose": "Manufa",
+  "Date": "Kwanan wata",
+  "Status": "Matsayi",
+  "Pending": "Ana jira",
+  "No requests found.": "Ba a samu buƙatu ba.",
+
+  "N/A": "Babu"
   }
