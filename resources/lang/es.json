@@ -1,4 +1,10 @@
 {
-    "Welcome to AATC VMS": "Bienvenido a AATC VMS",
-    "This is an initial setup of the Laravel environment": "Esta es una configuración inicial del entorno Laravel"
-}
+    "Login": "Iniciar sesión",
+    "Staff ID": "ID del personal",
+    "Password": "Contraseña",
+    "Contact support": "Contactar soporte",
+    "Invalid credentials.": "Credenciales inválidas.",
+    "Abuja-AATC": "Abuja-AATC",
+    "Visitor Management Portal": "Portal de gestión de visitantes",
+    "Abuja-AATC Visitor Management Portal": "Portal de gestión de visitantes de Abuja-AATC"
+  }
