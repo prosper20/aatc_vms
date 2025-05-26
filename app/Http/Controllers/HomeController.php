@@ -62,15 +62,15 @@ public function index(Request $request)
 
     $notifications = Visit::with('visitor')
         ->where('staff_id', $staffId)
-        ->whereIn('status', ['approved', 'rejected'])
-        ->orderBy('updated_at', 'desc')
-        ->limit(3)
+        ->whereIn('status', ['approved', 'denied', 'pending'])
+        ->orderBy('visit_date', 'desc')
+        ->limit(10)
         ->get();
 
     $stats = [
         'total_requests' => Visit::where('staff_id', $staffId)->count(),
         'approved' => Visit::where('staff_id', $staffId)->where('status', 'approved')->count(),
-        'declined' => Visit::where('staff_id', $staffId)->where('status', 'rejected')->count(),
+        'declined' => Visit::where('staff_id', $staffId)->where('status', 'denied')->count(),
     ];
 
     $requests = Visit::with('visitor')
@@ -82,7 +82,7 @@ public function index(Request $request)
               ->orWhere('organization', 'like', "%$search%");
         })->orWhere('reason', 'like', "%$search%");
     })
-    ->orderBy('created_at', 'desc')
+    ->orderBy('visit_date', 'desc')
     ->get();
 
     return view('home', compact('staff', 'notifications', 'stats', 'requests', 'search'));

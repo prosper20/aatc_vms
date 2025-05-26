@@ -19,6 +19,8 @@
         <div class="mt-4 md:mt-0 md:flex md:items-center md:justify-end md:gap-4 hidden md:block">
             @include('partials.language_switcher')
 
+            <a href="{{ route("profile.edit") }}"><span class="material-icons text-lg text-[#07AF8B]"">account_circle</span></a>
+
             <div class="text-right mt-4 md:mt-0">
                 <div><strong>{{ $staff->name }}</strong></div>
                 <div>{{ __('Location') }}: <strong>{{ __('Abuja') }}</strong></div>
@@ -37,6 +39,8 @@
     <!-- Collapsible Menu -->
     <div id="mobileMenu" class="md:hidden mt-4 md:mt-0 md:flex md:items-center md:justify-end md:gap-4 hidden md:block">
         @include('partials.language_switcher')
+
+        <a href="{{ route("profile.update") }}"><span class="material-icons text-lg text-[#07AF8B]">account_circle</span></a>
 
         <div class="text-right mt-4 md:mt-0">
             <div><strong>{{ $staff->name }}</strong></div>
@@ -110,19 +114,28 @@
       {{ __('No notifications yet.') }}
     </div>
   @else
-    <ul class="space-y-3">
-                @foreach ($notifications as $note)
-                  <li class="flex justify-between items-center text-sm">
-                    <div class="flex items-center space-x-2">
-                      <span class="material-icons text-[#07AF8B] text-base">
-                        {{ $note->status === 'approved' ? 'check_circle' : 'cancel' }}
-                      </span>
-                      <span>{{ $note->name }} {{ __($note->status) }}.</span>
-                    </div>
-                    <span class="text-gray-500">{{ $note->updated_at->format('g:iA d/m/Y') }}</span>
-                  </li>
-                @endforeach
-              </ul>
+  <ul class="space-y-3">
+    @foreach ($notifications as $note)
+      <li class="flex items-center justify-between gap-2 text-sm bg-gray-50 rounded-lg px-3 py-2">
+
+        <div class="flex items-center gap-2 truncate flex-1 min-w-0">
+          <span class="material-icons text-base
+            {{ $note->status === 'approved' ? 'text-[#07AF8B]' : ($note->status === 'pending' ? 'text-[#FFA500]' : 'text-[#b00020]') }}">
+            {{ $note->status === 'approved' ? 'check_circle' : ($note->status === 'pending' ? 'hourglass_empty' : 'cancel') }}
+          </span>
+          <span class="font-semibold truncate">{{ ucfirst(__($note->status)) }}</span>
+        </div>
+
+        <div class="truncate text-left text-gray-800 font-medium flex-1 min-w-0 px-2">
+          {{ $note->visitor->name ?? 'Unknown' }}
+        </div>
+
+        <div class="text-gray-500 text-xs text-right truncate flex-1 min-w-0">
+          {{ \Carbon\Carbon::parse($note->visit_date)->format('g:iA d/m/Y') }}
+        </div>
+      </li>
+    @endforeach
+</ul>
   @endif
             </div>
           </div>
@@ -158,16 +171,16 @@
                   <tbody class="divide-y divide-gray-200">
                     @forelse ($requests as $request)
                       <tr class="hover:bg-gray-50 cursor-pointer" onclick="openModal({{ $request->id }})">
-                        <td class="p-3">{{ $request->visitor->name ?? 'N/A' }}</td>
-                        <td class="p-3">{{ $request->unique_code }}</td>
+                        <td class="p-3 truncate">{{ $request->visitor->name ?? 'N/A' }}</td>
                         <td class="p-3">{{ \Carbon\Carbon::parse($request->visit_date)->format('d/m/Y g:i A') }}</td>
+                        <td class="p-3 truncate">{{ $request->reason }}</td>
                         <td class="p-3">
                           @php $status = strtolower($request->status); @endphp
                           @if($status === 'approved')
                             <span class="text-[#07AF8B] font-semibold">{{ __('Approved') }}</span>
                           @elseif($status === 'pending')
                             <span class="text-[#FFA500] font-semibold">{{ __('Pending') }}</span>
-                          @elseif(in_array($status, ['declined', 'rejected']))
+                          @elseif ($status === 'denied')
                             <span class="text-[#b00020] font-semibold">{{ __('Declined') }}</span>
                           @else
                             <span>{{ __($request->status) }}</span>

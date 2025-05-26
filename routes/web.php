@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\EmployeeLoginController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\Auth\LoginController;
 
 
 Route::get('language/{locale}', function ($locale) {
@@ -24,6 +25,7 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/hash/{password}', function ($password) {
     return Hash::make($password);
@@ -33,7 +35,12 @@ Route::get('/hash/{password}', function ($password) {
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::post('/home/submit-request', [HomeController::class, 'submitRequest'])->name('home.submit');
 
-Route::get('/profile/update', [ProfileController::class, 'edit'])->name('profile.update');
+// Route::get('/profile/update', [ProfileController::class, 'edit'])->name('profile.update');
+
+Route::middleware(['auth:staff'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
 
 Route::get('/register-visitor', [VisitorController::class, 'create'])->name('register_visitor');
 Route::post('/register-visitor', [VisitorController::class, 'store'])->name('visitors.store');

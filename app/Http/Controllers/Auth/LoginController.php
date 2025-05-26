@@ -30,30 +30,20 @@ class LoginController extends Controller
             session(['staff_id' => $staff->id, 'name' => $staff->name]);
 
             return $staff->profile_completed == 0
-                ? redirect('/update-profile')
+                ? redirect()->route('profile.edit')
                 : redirect('/home');
         }
 
-        // $employee = Employee::where('email', $credentials['email'])->first();
-
-        // if ($employee && Hash::check($credentials['password'], $employee->password)) {
-        //     // session(['employee_id' => $employee->id, 'name' => $employee->name]);
-
-        //     if (Auth::guard('web')->attempt($credentials)) {
-        //         $employee = Auth::user();
-        //         session(['employee_id' => $employee->id, 'name' => $employee->name]);
-
-        //         return $employee->profile_completed == 0
-        //             ? redirect('/update-profile')
-        //             : redirect('/home');
-        //     }
-
-        //     return $employee->profile_completed == 0
-        //         ? redirect('/update-profile')
-        //         : redirect('/home');
-        // }
-
         return redirect()->route('login', ['error' => 1]);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('staff')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }
 
