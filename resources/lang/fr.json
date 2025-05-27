@@ -93,5 +93,8 @@
     "Download Sample": "Télécharger l'exemple",
     "Cancel": "Annuler",
     "Invalid phone number:": "Numéro de téléphone invalide :",
-    "Invalid email address:": "Adresse e-mail invalide :"
+    "Invalid email address:": "Adresse e-mail invalide :",
+
+    "Receptionist Login": "Connexion réceptionniste",
+    "Username": "Nom d'utilisateur"
   }

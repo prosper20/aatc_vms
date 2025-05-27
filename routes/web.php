@@ -11,6 +11,8 @@ use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ReceptionAuthController;
+use App\Http\Controllers\ReceptionDashboardController;
 
 
 Route::get('language/{locale}', function ($locale) {
@@ -35,7 +37,18 @@ Route::get('/hash/{password}', function ($password) {
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::post('/home/submit-request', [HomeController::class, 'submitRequest'])->name('home.submit');
 
-// Route::get('/profile/update', [ProfileController::class, 'edit'])->name('profile.update');
+// Reception Staff Routes
+Route::prefix('reception')->name('reception.')->group(function () {
+    // Authentication Routes
+    Route::get('/login', [ReceptionAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [ReceptionAuthController::class, 'login'])->name('login.submit');
+    Route::post('/logout', [ReceptionAuthController::class, 'logout'])->name('logout');
+
+    // Protected Dashboard Route
+    Route::middleware(['auth:receptionist'])->group(function () {
+        Route::get('/dashboard', [ReceptionDashboardController::class, 'index'])->name('dashboard');
+    });
+});
 
 Route::middleware(['auth:staff'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
