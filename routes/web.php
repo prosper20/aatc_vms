@@ -13,6 +13,17 @@ use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ReceptionAuthController;
 use App\Http\Controllers\ReceptionDashboardController;
+use App\Http\Controllers\ScannerController;
+use App\Http\Controllers\SmController;
+use App\Http\Controllers\SmDashboardController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\VisitController;
+use App\Exports\VisitsExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\ModalController;
+
+
 
 
 Route::get('language/{locale}', function ($locale) {
@@ -36,6 +47,11 @@ Route::get('/hash/{password}', function ($password) {
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::post('/home/submit-request', [HomeController::class, 'submitRequest'])->name('home.submit');
+
+Route::get('/modal', [ModalController::class, 'index'])->name('modal');
+Route::post('/modal-data', [ModalController::class, 'getModalData'])->name('modal.data');
+Route::post('/visitor-lookup', [ModalController::class, 'visitorLookup'])->name('visitor.lookup');
+
 
 // Reception Staff Routes
 Route::prefix('reception')->name('reception.')->group(function () {
@@ -71,4 +87,34 @@ CSV;
         'Content-Disposition' => 'attachment; filename="sample-visitors.csv"',
     ]);
 })->name('visitors.sample-csv');
+
+// Gate routes
+Route::prefix('gate')->name('gate.')->group(function () {
+    Route::get('/scanner', [ScannerController::class, 'index'])->name('scanner.index');
+    Route::post('/scanner/verify', [ScannerController::class, 'verify'])->name('scanner.verify');
+    Route::post('/scanner/checkin', [ScannerController::class, 'checkin'])->name('scanner.checkin');
+    Route::post('/scanner/notify', [ScannerController::class, 'notify'])->name('scanner.notify');
+    Route::post('/scanner/search', [ScannerController::class, 'search'])->name('scanner.search');
+});
+
+// Security manager dashboard routes
+Route::prefix('sm')->name('sm.')->group(function () {
+    // Authentication Routes
+    Route::get('/login', [SmController::class, 'showLoginForm'])->name('sm.login');
+    Route::post('/login', [SmController::class, 'login'])->name('sm.login.submit');
+    // Protected Dashboard Routes
+    Route::middleware(['auth:sm'])->group(function () {
+        Route::get('/dashboard', [SmController::class, 'dashboard'])->name('sm.dashboard');
+        Route::post('/logout', [SmController::class, 'logout'])->name('sm.logout');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::post('/visits/{visit}/approve', [VisitController::class, 'approve'])->name('visits.approve');
+        Route::post('/visits/{visit}/deny', [VisitController::class, 'deny'])->name('visits.deny');
+        Route::get('/visits/pending', [VisitController::class, 'pending'])->name('visits.pending');
+        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+        Route::get('/analytics/export', function () {
+            return Excel::download(new VisitsExport, 'visitors_report.xlsx');
+        });
+    });
+});
+
 

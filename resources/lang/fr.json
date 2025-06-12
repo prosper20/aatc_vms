@@ -96,5 +96,33 @@
     "Invalid email address:": "Adresse e-mail invalide :",
 
     "Receptionist Login": "Connexion réceptionniste",
-    "Username": "Nom d'utilisateur"
+    "Username": "Nom d'utilisateur",
+
+    "Scan Visitor QR Code": "Scanner le code QR du visiteur",
+    "Enter Unique Code Manually": "Entrer le code unique manuellement",
+    "Waiting for scan...": "En attente de la lecture...",
+    "Visitor Information": "Informations du visiteur",
+    "Name": "Nom",
+    "Company": "Entreprise",
+    "Host": "Hôte",
+    "Visitor verified successfully!": "Visiteur vérifié avec succès !",
+    "Check-In Visitor": "Enregistrer l'arrivée du visiteur",
+    "Notify Host": "Notifier l'hôte",
+    "Notification sent to": "Notification envoyée à",
+    "Connection error - please try again": "Erreur de connexion - veuillez réessayer",
+    "Processing QR code...": "Traitement du code QR...",
+    "Error processing request": "Erreur lors du traitement de la requête",
+    "Error during check-in": "Erreur lors de l'enregistrement",
+    "Host Notified": "Hôte notifié",
+    "Searching...": "Recherche en cours...",
+    "Please enter a valid code.": "Veuillez entrer un code valide.",
+    "Scan failed. Please try again.": "Échec du scan. Veuillez réessayer.",
+    "Notification failed.": "Échec de la notification.",
+    "Error occurred while searching.": "Une erreur est survenue lors de la recherche.",
+    "AATC Visitor Management System": "Système de gestion des visiteurs AATC",
+
+    "Security Manager Login": "Connexion Responsable Sécurité",
+    "Enter your email": "Entrez votre e-mail",
+    "Enter your password": "Entrez votre mot de passe",
+    "Forgot password?": "Mot de passe oublié ?"
   }
