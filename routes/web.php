@@ -22,6 +22,8 @@ use App\Http\Controllers\VisitController;
 use App\Exports\VisitsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\ModalController;
+use App\Http\Controllers\VisitorHistoryController;
+use App\Http\Controllers\PendingVisitsController;
 
 
 
@@ -51,6 +53,13 @@ Route::post('/home/submit-request', [HomeController::class, 'submitRequest'])->n
 Route::get('/modal', [ModalController::class, 'index'])->name('modal');
 Route::post('/modal-data', [ModalController::class, 'getModalData'])->name('modal.data');
 Route::post('/visitor-lookup', [ModalController::class, 'visitorLookup'])->name('visitor.lookup');
+Route::middleware(['auth:staff'])->group(function () {
+    Route::post('/submit-visitors', [ModalController::class, 'storeVisitors'])
+         ->name('store.visitors');
+});
+Route::post('/upload-visitors-csv', [ModalController::class, 'uploadCSV'])
+    ->middleware('auth:staff')
+    ->name('upload.visitors.csv');
 
 
 // Reception Staff Routes
@@ -59,11 +68,15 @@ Route::prefix('reception')->name('reception.')->group(function () {
     Route::get('/login', [ReceptionAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [ReceptionAuthController::class, 'login'])->name('login.submit');
     Route::post('/logout', [ReceptionAuthController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [ReceptionDashboardController::class, 'index'])->name('dashboard');
 
     // Protected Dashboard Route
-    Route::middleware(['auth:receptionist'])->group(function () {
-        Route::get('/dashboard', [ReceptionDashboardController::class, 'index'])->name('dashboard');
-    });
+    // Route::middleware(['auth:receptionist'])->group(function () {
+    //     Route::get('/dashboard', [ReceptionDashboardController::class, 'index'])->name('dashboard');
+    // });
+    Route::post('/search', [ReceptionDashboardController::class, 'search'])->name('search');
+    Route::post('/check-in/{visit}', [ReceptionDashboardController::class, 'checkIn'])->name('checkin');
+    Route::post('/check-out/{visit}', [ReceptionDashboardController::class, 'checkOut'])->name('checkout');
 });
 
 Route::middleware(['auth:staff'])->group(function () {
@@ -100,21 +113,49 @@ Route::prefix('gate')->name('gate.')->group(function () {
 // Security manager dashboard routes
 Route::prefix('sm')->name('sm.')->group(function () {
     // Authentication Routes
-    Route::get('/login', [SmController::class, 'showLoginForm'])->name('sm.login');
-    Route::post('/login', [SmController::class, 'login'])->name('sm.login.submit');
+    Route::get('/login', [SmController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [SmController::class, 'login'])->name('login.submit');
     // Protected Dashboard Routes
     Route::middleware(['auth:sm'])->group(function () {
-        Route::get('/dashboard', [SmController::class, 'dashboard'])->name('sm.dashboard');
-        Route::post('/logout', [SmController::class, 'logout'])->name('sm.logout');
+        Route::get('/dashboard', [SmController::class, 'dashboard'])->name('dashboard');
+        Route::post('/logout', [SmController::class, 'logout'])->name('logout');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
         Route::post('/visits/{visit}/approve', [VisitController::class, 'approve'])->name('visits.approve');
         Route::post('/visits/{visit}/deny', [VisitController::class, 'deny'])->name('visits.deny');
         Route::get('/visits/pending', [VisitController::class, 'pending'])->name('visits.pending');
+
         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
         Route::get('/analytics/export', function () {
             return Excel::download(new VisitsExport, 'visitors_report.xlsx');
         });
+        Route::get('/analytics/recent-activities', [AnalyticsController::class, 'getRecentActivitiesAjax'])->name('analytics.recent-activities');
+
+        Route::get('/visitor-history', [VisitorHistoryController::class, 'index'])->name('visitor-history');
+        Route::get('/visitor-history/{visit}', [VisitorHistoryController::class, 'show'])->name('visitor-history.show');
+        Route::get('/visitor-history/export', [VisitorHistoryController::class, 'export'])->name('visitor-history.export');
+
+        Route::get('/pending-visits', [PendingVisitsController::class, 'index'])->name('pending-visits');
+        Route::get('/pending-visits/export', [PendingVisitsController::class, 'export'])->name('pending-visits.export');
     });
 });
+// Route::prefix('sm')->name('sm.')->group(function () {
+//     // Authentication Routes
+//     Route::get('/login', [SmController::class, 'showLoginForm'])->name('sm.login');
+//     Route::post('/login', [SmController::class, 'login'])->name('sm.login.submit');
+//     // Protected Dashboard Routes
+//     Route::middleware(['auth:sm'])->group(function () {
+//         Route::get('/dashboard', [SmController::class, 'dashboard'])->name('sm.dashboard');
+//         Route::post('/logout', [SmController::class, 'logout'])->name('sm.logout');
+//         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+//         Route::post('/visits/{visit}/approve', [VisitController::class, 'approve'])->name('visits.approve');
+//         Route::post('/visits/{visit}/deny', [VisitController::class, 'deny'])->name('visits.deny');
+//         Route::get('/visits/pending', [VisitController::class, 'pending'])->name('visits.pending');
+//         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+//         Route::get('/analytics/export', function () {
+//             return Excel::download(new VisitsExport, 'visitors_report.xlsx');
+//         });
+//     });
+// });
 
 

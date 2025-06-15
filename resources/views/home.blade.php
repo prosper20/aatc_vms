@@ -199,7 +199,8 @@
              x-cloak
              class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 
-            <div @click.away="closeModal()"
+            <div
+            {{-- @click.away="closeModal()" --}}
                  x-transition.scale.origin.center
                  class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
 
@@ -239,26 +240,6 @@
                         </button>
                     </div>
                 </div>
-
-                {{-- <div class="flex justify-between items-center p-4 border-b bg-gray-50">
-                    <h2 class="text-lg font-semibold text-gray-800" x-text="`Visitor ${currentVisitorIndex + 1}`"></h2>
-                    <div class="flex items-center space-x-2">
-                        <button
-                            @click="nextVisitor()"
-                            x-show="visitors.length > 1 && currentVisitorIndex < visitors.length - 1"
-                            class="text-gray-600 hover:text-gray-800"
-                        >
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </button>
-                        <button @click="closeModal()" class="text-gray-500 hover:text-gray-700">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div> --}}
 
                 <!-- Card Body - Visitor Details -->
                 <div class="p-6 space-y-4">
@@ -336,7 +317,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
                                 <input
-                                    x-model="currentVisitor.hostName"
+                                    x-model="currentVisitor.date"
                                     type="date"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
@@ -344,7 +325,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Time of visit</label>
                                 <input
-                                    x-model="currentVisitor.visitTime"
+                                    x-model="currentVisitor.time"
                                     type="time"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
@@ -397,6 +378,7 @@
                             </svg>
                             <span>Add visitor</span>
                         </button>
+
                         <button
                             @click="importCSV()"
                             class="flex-1 bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-md border border-gray-300 transition duration-200 flex items-center justify-center space-x-2"
@@ -411,548 +393,386 @@
                             <span>Upload CSV</span>
                         </button>
                     </div>
+                    <span @click="downloadCSVTemplate"
+                    className="text-sm text-gray-500 px-6 text-right ml-auto cursor-pointer ">
+                        CSV Template
+                </span>
+                    {{-- <span
+                        @click="downloadCSVTemplate"
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-md border border-gray-300 transition duration-200 flex items-center justify-center space-x-2"
+                    >
+                        <span>Download CSV Template</span>
+                    </span> --}}
+
 
                     <!-- Second Row - Submit Button -->
                     <button
+                        @click="submitVisitors()"
                         class="w-full bg-[#007570] hover:bg-[#0b7671] text-white font-semibold py-3 px-4 rounded-md transition duration-200"
                     >
                         Submit Request
                     </button>
                 </div>
             </div>
-        </div>
-    {{-- <div
-        x-show="isOpen"
-        x-transition.opacity
-        x-cloak
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    >
-        <div
-            @click.away="closeModal()"
-            x-transition.scale.origin.center
-            class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
-        >
-            <!-- Card Top - Visitor Navigation -->
-            <div class="flex justify-between items-center p-4 border-b bg-gray-50">
-                <h2 class="text-lg font-semibold text-gray-800">
-                    Visitor <span x-text="currentVisitorIndex + 1"></span> of <span x-text="visitors.length"></span>
-                </h2>
-                <div class="flex items-center space-x-2">
-                    <!-- Previous Visitor -->
-                    <button
-                        @click="prevVisitor()"
-                        x-show="visitors.length > 1 && currentVisitorIndex > 0"
-                        class="text-gray-600 hover:text-gray-800"
-                    >
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
+    </div>
 
-                    <!-- Next Visitor -->
-                    <button
-                        @click="nextVisitor()"
-                        x-show="visitors.length > 1 && currentVisitorIndex < visitors.length - 1"
-                        class="text-gray-600 hover:text-gray-800"
-                    >
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-
-                    <!-- Close Modal -->
-                    <button @click="closeModal()" class="text-gray-500 hover:text-gray-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Card Body - Visitor Details -->
-            <div class="p-6 space-y-4">
-                <!-- Email Lookup Section -->
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Email address</label>
-                    <div class="flex space-x-2">
-                        <input
-                            x-model="currentVisitor.email"
-                            @input="clearLookupStatus()"
-                            type="email"
-                            placeholder="john.doe@example.com"
-                            class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                        <button
-                            @click="lookupVisitor()"
-                            :disabled="!currentVisitor.email || lookupLoading"
-                            class="bg-[#007570] hover:bg-[#0b7671] disabled:bg-gray-50 disabled:text-gray-400 text-white px-4 py-2 rounded-md border border-gray-300 transition duration-200"
-                        >
-                            <span x-show="!lookupLoading">Look up</span>
-                            <span x-show="lookupLoading">Searching..</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Lookup Status -->
-                <div x-show="lookupStatus" class="p-3 rounded-md flex items-center space-x-2"
-                     :class="lookupFound ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'">
-                    <svg x-show="lookupFound" class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <svg x-show="!lookupFound" class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                    <span :class="lookupFound ? 'text-green-800' : 'text-yellow-800'" x-text="lookupMessage"></span>
-                </div>
-
-                <!-- Visitor Details Form -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Full name</label>
-                        <input
-                            x-model="currentVisitor.name"
-                            type="text"
-                            placeholder="John Doe"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone number</label>
-                        <input
-                            x-model="currentVisitor.phone"
-                            type="tel"
-                            placeholder="+1234567890"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Organization <span class="text-gray-400">(optional)</span></label>
-                    <input
-                        x-model="currentVisitor.organization"
-                        type="text"
-                        placeholder="Acme Inc."
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                </div>
-
-                <!-- Visit Information Section -->
-                <div class="border-t pt-4">
-                    <h3 class="text-lg font-medium text-gray-800 mb-4">Visit Information</h3>
-
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                            <input
-                                x-model="currentVisitor.hostName"
-                                type="date"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Time of visit</label>
-                            <input
-                                x-model="currentVisitor.visitTime"
-                                type="time"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Floor</label>
-                        <select
-                            x-model="currentVisitor.floor"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="">Select floor</option>
-                            <option value="Floor 1">Ground Floor</option>
-                            <option value="Floor 2">MezerNine</option>
-                            <option value="Floor 3">Floor 1</option>
-                            <option value="Floor 4">Floor 2</option>
-                            <option value="Floor 5">Floor 3</option>
-                            <option value="Floor 3">Floor 4</option>
-                            <option value="Floor 4">Floor 5</option>
-                            <option value="Floor 5">Floor 6</option>
-                            <option value="Floor 3">Floor 7</option>
-                            <option value="Floor 4">Floor 8</option>
-                            <option value="Floor 5">Floor 9</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Purpose</label>
-                        <textarea
-                            x-model="currentVisitor.reason"
-                            rows="3"
-                            placeholder="Purpose of visit..."
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        ></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card Bottom - Actions -->
-            <div class="p-6 border-t bg-gray-50 space-y-3">
-                <!-- First Row - Add Visitor & Import CSV -->
-                <div class="flex space-x-3">
-                    <button
-                        @click="addNewVisitor()"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-md border border-gray-300 transition duration-200 flex items-center justify-center space-x-2"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        <span>Add visitor</span>
-                    </button>
-                    <button
-                        @click="importCSV()"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-md border border-gray-300 transition duration-200 flex items-center justify-center space-x-2"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19V5m0 0l-7 7m7-7l7 7"></path>
-                        </svg>
-                        <span>Upload CSV</span>
-                    </button>
-                </div>
-
-                <!-- Second Row - Submit Button -->
+    <div x-show="showCsvErrorModal" x-transition x-cloak class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-xl w-full space-y-4">
+            <h2 class="text-lg font-semibold text-red-600">CSV Upload Errors</h2>
+            <ul class="list-disc pl-5 text-sm text-gray-800 max-h-60 overflow-y-auto">
+                <template x-for="error in csvErrors" :key="error">
+                    <li x-text="error"></li>
+                </template>
+            </ul>
+            <div class="text-right">
                 <button
-                    class="w-full bg-[#007570] hover:bg-[#0b7671] text-white font-semibold py-3 px-4 rounded-md transition duration-200"
+                    @click="showCsvErrorModal = false"
+                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
                 >
-                    Submit Request
+                    Close
                 </button>
             </div>
         </div>
-    </div> --}}
+    </div>
+
 </div>
 
 <script>
-    function modalComponent() {
-        return {
-            isOpen: false,
-            visitors: [],
-            currentVisitorIndex: 0,
-            lookupLoading: false,
-            lookupStatus: false,
-            lookupFound: false,
-            lookupMessage: '',
+        function modalComponent() {
+            return {
+                isOpen: false,
+                visitors: [],
+                currentVisitorIndex: 0,
 
-            get currentVisitor() {
-                return this.visitors[this.currentVisitorIndex] || this.createEmptyVisitor();
-            },
+                showCsvErrorModal: false,
+                csvErrors: [],
 
-            set currentVisitor(value) {
-                if (this.visitors[this.currentVisitorIndex]) {
-                    this.visitors[this.currentVisitorIndex] = value;
-                }
-            },
+                lookupLoading: false,
+                lookupStatus: false,
+                lookupFound: false,
+                lookupMessage: '',
 
-            createEmptyVisitor() {
-                return {
-                    email: '',
-                    name: '',
-                    phone: '',
-                    organization: '',
-                    hostName: '',
-                    visitTime: '14:30',
-                    floor: 'Floor 3',
-                    reason: ''
-                };
-            },
+                get currentVisitor() {
+                    return this.visitors[this.currentVisitorIndex] || this.createEmptyVisitor();
+                },
 
-            openModal() {
-                this.isOpen = true;
-                if (this.visitors.length === 0) {
-                    this.visitors = [this.createEmptyVisitor()];
-                }
-                this.currentVisitorIndex = 0;
-            },
-
-            closeModal() {
-                this.isOpen = false;
-                this.visitors = [];
-                this.currentVisitorIndex = 0;
-                this.clearLookupStatus();
-            },
-
-            nextVisitor() {
-                if (this.currentVisitorIndex < this.visitors.length - 1) {
-                    this.currentVisitorIndex++;
-                    this.clearLookupStatus();
-                }
-            },
-
-            prevVisitor() {
-                if (this.currentVisitorIndex > 0) {
-                    this.currentVisitorIndex--;
-                    this.clearLookupStatus();
-                }
-            },
-
-            addNewVisitor() {
-                this.visitors.push(this.createEmptyVisitor());
-                this.currentVisitorIndex = this.visitors.length - 1;
-                this.clearLookupStatus();
-            },
-
-            async lookupVisitor() {
-                if (!this.currentVisitor.email) return;
-
-                this.lookupLoading = true;
-                this.clearLookupStatus();
-
-                try {
-                    const response = await fetch('/visitor-lookup', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({ email: this.currentVisitor.email })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to lookup visitor');
+                set currentVisitor(value) {
+                    if (this.visitors[this.currentVisitorIndex]) {
+                        this.visitors[this.currentVisitorIndex] = value;
                     }
+                },
 
-                    const data = await response.json();
+                createEmptyVisitor() {
+                    return {
+                        email: '',
+                        name: '',
+                        phone: '',
+                        organization: '',
+                        hostName: '',
+                        visitTime: '14:30',
+                        floor: 'Floor 3',
+                        reason: ''
+                    };
+                },
 
-                    this.lookupStatus = true;
-                    this.lookupFound = data.found;
-
-                    if (data.found) {
-                        this.lookupMessage = 'Visitor found';
-                        // Auto-fill visitor details
-                        this.visitors[this.currentVisitorIndex] = {
-                            ...this.currentVisitor,
-                            name: data.visitor.name,
-                            phone: data.visitor.phone,
-                            organization: data.visitor.organization
-                        };
-                    } else {
-                        this.lookupMessage = 'Not found, supply visitor details';
+                openModal() {
+                    this.isOpen = true;
+                    if (this.visitors.length === 0) {
+                        this.visitors = [this.createEmptyVisitor()];
                     }
-                } catch (error) {
-                    this.lookupStatus = true;
-                    this.lookupFound = false;
-                    this.lookupMessage = 'Error looking up visitor';
-                    console.error('Lookup error:', error);
-                } finally {
-                    this.lookupLoading = false;
-                }
-            },
+                    this.currentVisitorIndex = 0;
+                },
 
-            clearLookupStatus() {
-                this.lookupStatus = false;
-                this.lookupFound = false;
-                this.lookupMessage = '';
-            },
+                closeModal() {
+                    this.isOpen = false;
+                    this.visitors = [];
+                    this.currentVisitorIndex = 0;
+                    this.clearLookupStatus();
+                },
 
-            importCSV() {
-                // Create file input dynamically
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.csv';
-                input.onchange = (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        // For now, simulate CSV import with dummy data
-                        this.visitors = [
-                            {
-                                email: 'import1@example.com',
-                                name: 'Import User 1',
-                                phone: '+1111111111',
-                                organization: 'CSV Corp',
-                                hostName: 'Manager',
-                                visitTime: '09:00',
-                                floor: 'Floor 2',
-                                reason: 'Imported from CSV'
-                            },
-                            {
-                                email: 'import2@example.com',
-                                name: 'Import User 2',
-                                phone: '+2222222222',
-                                organization: 'Data Inc',
-                                hostName: 'Director',
-                                visitTime: '10:30',
-                                floor: 'Floor 4',
-                                reason: 'CSV Import Meeting'
-                            }
-                        ];
-                        this.currentVisitorIndex = 0;
+                nextVisitor() {
+                    if (this.currentVisitorIndex < this.visitors.length - 1) {
+                        this.currentVisitorIndex++;
                         this.clearLookupStatus();
                     }
-                };
-                input.click();
-            }
-        }
-    }
-</script>
+                },
 
-{{-- <script>
-    function modalComponent() {
-        return {
-            isOpen: false,
-            visitors: [],
-            currentVisitorIndex: 0,
-            lookupLoading: false,
-            lookupStatus: false,
-            lookupFound: false,
-            lookupMessage: '',
-
-            get currentVisitor() {
-                return this.visitors[this.currentVisitorIndex] || this.createEmptyVisitor();
-            },
-
-            set currentVisitor(value) {
-                if (this.visitors[this.currentVisitorIndex]) {
-                    this.visitors[this.currentVisitorIndex] = value;
-                }
-            },
-
-            createEmptyVisitor() {
-                return {
-                    email: '',
-                    name: '',
-                    phone: '',
-                    organization: '',
-                    hostName: '',
-                    visitTime: '14:30',
-                    floor: 'Floor 3',
-                    reason: ''
-                };
-            },
-
-            openModal() {
-                this.isOpen = true;
-                if (this.visitors.length === 0) {
-                    this.visitors = [this.createEmptyVisitor()];
-                }
-                this.currentVisitorIndex = 0;
-            },
-
-            closeModal() {
-                this.isOpen = false;
-                this.visitors = [];
-                this.currentVisitorIndex = 0;
-                this.clearLookupStatus();
-            },
-
-            nextVisitor() {
-                if (this.currentVisitorIndex < this.visitors.length - 1) {
-                    this.currentVisitorIndex++;
-                    this.clearLookupStatus();
-                }
-            },
-
-            prevVisitor() {
-                if (this.currentVisitorIndex > 0) {
-                    this.currentVisitorIndex--;
-                    this.clearLookupStatus();
-                }
-            },
-
-            addNewVisitor() {
-                this.visitors.push(this.createEmptyVisitor());
-                this.currentVisitorIndex = this.visitors.length - 1;
-                this.clearLookupStatus();
-            },
-
-            async lookupVisitor() {
-                if (!this.currentVisitor.email) return;
-
-                this.lookupLoading = true;
-                this.clearLookupStatus();
-
-                try {
-                    const response = await fetch('/visitor-lookup', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({ email: this.currentVisitor.email })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to lookup visitor');
-                    }
-
-                    const data = await response.json();
-
-                    this.lookupStatus = true;
-                    this.lookupFound = data.found;
-
-                    if (data.found) {
-                        this.lookupMessage = 'Visitor found';
-                        // Auto-fill visitor details
-                        this.visitors[this.currentVisitorIndex] = {
-                            ...this.currentVisitor,
-                            name: data.visitor.name,
-                            phone: data.visitor.phone,
-                            organization: data.visitor.organization
-                        };
-                    } else {
-                        this.lookupMessage = 'Not found, supply visitor details';
-                    }
-                } catch (error) {
-                    this.lookupStatus = true;
-                    this.lookupFound = false;
-                    this.lookupMessage = 'Error looking up visitor';
-                    console.error('Lookup error:', error);
-                } finally {
-                    this.lookupLoading = false;
-                }
-            },
-
-            clearLookupStatus() {
-                this.lookupStatus = false;
-                this.lookupFound = false;
-                this.lookupMessage = '';
-            },
-
-            importCSV() {
-                // Create file input dynamically
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.csv';
-                input.onchange = (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        // For now, simulate CSV import with dummy data
-                        this.visitors = [
-                            {
-                                email: 'import1@example.com',
-                                name: 'Import User 1',
-                                phone: '+1111111111',
-                                organization: 'CSV Corp',
-                                hostName: 'Manager',
-                                visitTime: '09:00',
-                                floor: 'Floor 2',
-                                reason: 'Imported from CSV'
-                            },
-                            {
-                                email: 'import2@example.com',
-                                name: 'Import User 2',
-                                phone: '+2222222222',
-                                organization: 'Data Inc',
-                                hostName: 'Director',
-                                visitTime: '10:30',
-                                floor: 'Floor 4',
-                                reason: 'CSV Import Meeting'
-                            }
-                        ];
-                        this.currentVisitorIndex = 0;
+                prevVisitor() {
+                    if (this.currentVisitorIndex > 0) {
+                        this.currentVisitorIndex--;
                         this.clearLookupStatus();
                     }
-                };
-                input.click();
+                },
+
+                addNewVisitor() {
+                    this.visitors.push(this.createEmptyVisitor());
+                    this.currentVisitorIndex = this.visitors.length - 1;
+                    this.clearLookupStatus();
+                },
+
+                async lookupVisitor() {
+                    if (!this.currentVisitor.email) return;
+
+                    this.lookupLoading = true;
+                    this.clearLookupStatus();
+
+                    try {
+                        const response = await fetch('/visitor-lookup', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({ email: this.currentVisitor.email })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to lookup visitor');
+                        }
+
+                        const data = await response.json();
+
+                        this.lookupStatus = true;
+                        this.lookupFound = data.found;
+
+                        if (data.found) {
+                            this.lookupMessage = 'Visitor found';
+                            // Auto-fill visitor details
+                            this.visitors[this.currentVisitorIndex] = {
+                                ...this.currentVisitor,
+                                name: data.visitor.name,
+                                phone: data.visitor.phone,
+                                organization: data.visitor.organization
+                            };
+                        } else {
+                            this.lookupMessage = 'Not found, supply visitor details';
+                        }
+                    } catch (error) {
+                        this.lookupStatus = true;
+                        this.lookupFound = false;
+                        this.lookupMessage = 'Error looking up visitor';
+                        console.error('Lookup error:', error);
+                    } finally {
+                        this.lookupLoading = false;
+                    }
+                },
+
+                clearLookupStatus() {
+                    this.lookupStatus = false;
+                    this.lookupFound = false;
+                    this.lookupMessage = '';
+                },
+
+                // importCSV() {
+                //     // Create file input dynamically
+                //     const input = document.createElement('input');
+                //     input.type = 'file';
+                //     input.accept = '.csv';
+                //     input.onchange = (e) => {
+                //         const file = e.target.files[0];
+                //         if (file) {
+                //             // For now, simulate CSV import with dummy data
+                //             this.visitors = [
+                //                 {
+                //                     email: 'import1@example.com',
+                //                     name: 'Import User 1',
+                //                     phone: '+1111111111',
+                //                     organization: 'CSV Corp',
+                //                     hostName: 'Manager',
+                //                     visitTime: '09:00',
+                //                     floor: 'Floor 2',
+                //                     reason: 'Imported from CSV'
+                //                 },
+                //                 {
+                //                     email: 'import2@example.com',
+                //                     name: 'Import User 2',
+                //                     phone: '+2222222222',
+                //                     organization: 'Data Inc',
+                //                     hostName: 'Director',
+                //                     visitTime: '10:30',
+                //                     floor: 'Floor 4',
+                //                     reason: 'CSV Import Meeting'
+                //                 }
+                //             ];
+                //             this.currentVisitorIndex = 0;
+                //             this.clearLookupStatus();
+                //         }
+                //     };
+                //     input.click();
+                // },
+
+//                 importCSV() {
+//     const input = document.createElement('input');
+//     input.type = 'file';
+//     input.accept = '.csv';
+
+//     input.onchange = async (e) => {
+//         const file = e.target.files[0];
+//         if (!file) return;
+
+//         Papa.parse(file, {
+//             header: true,
+//             skipEmptyLines: true,
+//             complete: async (results) => {
+//                 const rows = results.data;
+//                 const validRows = [];
+//                 const errors = [];
+
+//                 rows.forEach((row, index) => {
+//                     const rowNum = index + 2; // header is row 1
+//                     const required = ['email', 'name', 'date', 'time', 'floor'];
+//                     const missingFields = required.filter(f => !row[f] || row[f].trim() === '');
+
+//                     if (missingFields.length > 0) {
+//                         errors.push(`Row ${rowNum}: Missing ${missingFields.join(', ')}`);
+//                         return;
+//                     }
+
+//                     validRows.push({
+//                         email: row.email.trim(),
+//                         name: row.name.trim(),
+//                         phone: row.phone?.trim() || '',
+//                         organization: row.organization?.trim() || '',
+//                         date: row.date.trim(),
+//                         time: row.time.trim(),
+//                         floor: row.floor.trim(),
+//                         reason: row.reason?.trim() || ''
+//                     });
+//                 });
+
+//                 if (errors.length > 0) {
+//                     this.csvErrors = errors;
+//                     this.showCsvErrorModal = true;
+//                     return;
+//                 }
+
+//                 try {
+//                     const response = await fetch('/store-visitors', {
+//                         method: 'POST',
+//                         headers: {
+//                             'Content-Type': 'application/json',
+//                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+//                         },
+//                         body: JSON.stringify({ visitors: validRows })
+//                     });
+
+//                     const data = await response.json();
+
+//                     if (response.ok) {
+//                         this.visitors = validRows;
+//                         this.currentVisitorIndex = 0;
+//                         this.clearLookupStatus();
+//                         this.csvErrors = [];
+//                     } else if (response.status === 422) {
+//                         this.csvErrors = Object.entries(data.errors || {}).map(
+//                             ([key, messages]) => `${key}: ${messages.join(', ')}`
+//                         );
+//                         this.showCsvErrorModal = true;
+//                     } else {
+//                         alert(data.message || 'An error occurred.');
+//                     }
+//                 } catch (error) {
+//                     console.log(error)
+//                     alert('Failed to submit CSV data.');
+//                 }
+//             }
+//         });
+//     };
+
+//     input.click();
+// },
+
+
+                importCSV() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload-visitors-csv', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    this.visitors = data.visitors;
+                    this.currentVisitorIndex = 0;
+                    this.clearLookupStatus();
+                    alert('CSV uploaded successfully!');
+                } else {
+                    // alert(data.message || 'Upload failed.');
+                    this.csvErrors = Object.entries(data.errors || {}).map(
+                            ([key, messages]) => `${key}: ${messages.join(', ')}`
+                        );
+                        this.closeModal();
+                        this.showCsvErrorModal = true;
+                }
+            })
+            .catch(err => {
+                alert('An error occurred while uploading.');
+                console.error(err);
+            });
+        }
+    };
+    input.click();
+},
+
+downloadCSVTemplate() {
+    const csvContent = `email,name,phone,organization,date,time,floor,reason
+john@example.com,John Doe,+1234567890,Tech Co,"2025-06-15",14:00,Floor 1,Demo Presentation
+jane@example.com,Jane Smith,+0987654321,Design Inc,"2025-06-16",15:30,Floor 2,Client Meeting`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', 'visitor_template.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+},
+
+
+                submitVisitors: async function () {
+                    const visitorsArray = Alpine.raw(this.visitors)
+                    const bodyValue = JSON.stringify({ visitors: visitorsArray })
+                    console.log({ visitors: visitorsArray })
+                    try {
+                        const response = await fetch('/submit-visitors', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+
+                            body: bodyValue
+                            // body: JSON.stringify({ visitors: JSON.parse(JSON.stringify(Alpine.raw(this.visitors))) })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            // alert('Visitors submitted successfully!');
+                            this.closeModal();
+                        } else {
+                            alert(result.message || 'Something went wrong.');
+                        }
+                    } catch (error) {
+                        console.error('Submission error:', error);
+                        alert('An error occurred while submitting visitors.');
+                    }
+                }
+
             }
         }
-    }
-</script> --}}
+    </script>
 
 <script>
     const menuToggle = document.getElementById('menuToggle');

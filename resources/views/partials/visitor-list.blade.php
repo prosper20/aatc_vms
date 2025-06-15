@@ -1,6 +1,6 @@
-<div class="w-full border-t border-gray-400">
+<div class="w-full border-t ">
     @forelse($visitors as $visit)
-        <div x-data="{ expanded: false }" class="bg-white border-b border-gray-400 overflow-hidden transition-all">
+        <div x-data="{ expanded: false }" class="bg-white border-b  overflow-hidden transition-all">
             <!-- Compact Header (Always Visible) -->
             <div @click="expanded = !expanded" class="cursor-pointer p-4 hover:bg-gray-100 flex items-center justify-between">
                 <div class="flex items-center space-x-4">
@@ -23,7 +23,7 @@
             </div>
 
             <!-- Expandable Content (Hidden by Default) -->
-            <div x-show="expanded" x-collapse class="px-4 pb-4 border-t border-gray-400">
+            <div x-show="expanded" x-collapse class="px-4 pb-4 border-t ">
                 <!-- Details Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 mt-4">
                     <!-- Column 1 -->
