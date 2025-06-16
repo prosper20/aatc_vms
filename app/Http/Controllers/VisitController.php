@@ -13,7 +13,7 @@ class VisitController extends Controller
     public function approve(Visit $visit): RedirectResponse
     {
         $visit->update(['status' => 'approved']);
-        return redirect()->route('dashboard')->with('success', 'Visit approved successfully');
+        return redirect()->route('sm.dashboard')->with('success', 'Visit approved successfully');
     }
 
 public function deny(Visit $visit): RedirectResponse
