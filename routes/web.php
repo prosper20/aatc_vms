@@ -68,12 +68,12 @@ Route::prefix('reception')->name('reception.')->group(function () {
     Route::get('/login', [ReceptionAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [ReceptionAuthController::class, 'login'])->name('login.submit');
     Route::post('/logout', [ReceptionAuthController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', [ReceptionDashboardController::class, 'index'])->name('dashboard');
+    // Route::get('/dashboard', [ReceptionDashboardController::class, 'index'])->name('dashboard');
 
     // Protected Dashboard Route
-    // Route::middleware(['auth:receptionist'])->group(function () {
-    //     Route::get('/dashboard', [ReceptionDashboardController::class, 'index'])->name('dashboard');
-    // });
+    Route::middleware(['auth:receptionist'])->group(function () {
+        Route::get('/dashboard', [ReceptionDashboardController::class, 'index'])->name('dashboard');
+    });
     Route::post('/search', [ReceptionDashboardController::class, 'search'])->name('search');
     Route::post('/check-in/{visit}', [ReceptionDashboardController::class, 'checkIn'])->name('checkin');
     Route::post('/check-out/{visit}', [ReceptionDashboardController::class, 'checkOut'])->name('checkout');

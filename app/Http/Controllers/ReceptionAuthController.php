@@ -10,7 +10,11 @@ class ReceptionAuthController extends Controller
 {
     public function showLoginForm()
     {
+        if (Auth::guard('receptionist')->check()) {
+            return redirect()->route('reception.dashboard');
+        }
         return view('auth.reception-login');
+        // return view('auth.reception-login');
     }
 
     public function login(Request $request)
