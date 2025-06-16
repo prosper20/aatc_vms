@@ -125,7 +125,8 @@
 <script>
 function approveVisitor(id) {
     if (confirm('Are you sure you want to approve this visit?')) {
-        fetch('{{ route("sm.visits.approve", "") }}/' + id, {
+        // fetch('{{ route("sm.visits.approve", "") }}/' + id, {
+        fetch(`{{ url('sm/visits') }}/${id}/approve`, {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',

@@ -98,6 +98,7 @@ class ModalController extends Controller
                     'checkout_by' => null,
                     'is_checked_in' => false,
                     'is_checked_out' => false,
+                    'verification_message' => 'Visitor has not arrived at the gate',
                 ]);
             }
 

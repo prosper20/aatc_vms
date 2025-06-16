@@ -265,6 +265,8 @@
                                                 <div class="flex items-center gap-1">
                                                     @if($visit->verification_passed)
                                                     <span class="text-green-600">Successful</span>
+                                                    @elseif (is_null($visit->arrived_at_gate))
+                                                    <span class="text-yellow-600">Not Verified</span>
                                                     @else
                                                     <span class="text-red-600">Failed</span>
                                                     @endif
