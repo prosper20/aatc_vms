@@ -102,12 +102,31 @@ CSV;
 })->name('visitors.sample-csv');
 
 // Gate routes
+// Route::prefix('gate')->name('gate.')->group(function () {
+//     Route::get('/scanner', [ScannerController::class, 'index'])->name('scanner.index');
+//     Route::post('/scanner/verify', [ScannerController::class, 'verify'])->name('scanner.verify');
+//     Route::post('/scanner/checkin', [ScannerController::class, 'checkin'])->name('scanner.checkin');
+//     Route::post('/scanner/notify', [ScannerController::class, 'notify'])->name('scanner.notify');
+//     Route::post('/scanner/search', [ScannerController::class, 'search'])->name('scanner.search');
+// });
 Route::prefix('gate')->name('gate.')->group(function () {
+    // Scanner Interface
     Route::get('/scanner', [ScannerController::class, 'index'])->name('scanner.index');
+
+    // QR Code Verification
     Route::post('/scanner/verify', [ScannerController::class, 'verify'])->name('scanner.verify');
+
+    // Visitor Check-in
     Route::post('/scanner/checkin', [ScannerController::class, 'checkin'])->name('scanner.checkin');
+
+    // Host Notification
     Route::post('/scanner/notify', [ScannerController::class, 'notify'])->name('scanner.notify');
+
+    // Manual Search
     Route::post('/scanner/search', [ScannerController::class, 'search'])->name('scanner.search');
+
+    // Vehicle Registration (if you want a separate endpoint)
+    Route::post('/scanner/vehicle', [ScannerController::class, 'registerVehicle'])->name('scanner.vehicle');
 });
 
 // Security manager dashboard routes

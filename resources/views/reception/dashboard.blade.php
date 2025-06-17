@@ -266,7 +266,7 @@
                                                     @if($visit->verification_passed)
                                                     <span class="text-green-600">Successful</span>
                                                     @elseif (is_null($visit->arrived_at_gate))
-                                                    <span class="text-yellow-600">Not Verified</span>
+                                                    <span class="text-yellow-600">Awaiting Arrival</span>
                                                     @else
                                                     <span class="text-red-600">Failed</span>
                                                     @endif
@@ -286,6 +286,20 @@
                                                 </div>
                                             </td>
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                @php
+                                                    $statusClasses = [
+                                                        'pending' => 'bg-yellow-100 text-yellow-800',
+                                                        'approved' => 'bg-green-100 text-green-800',
+                                                        'rejected' => 'bg-red-100 text-red-800',
+                                                    ];
+                                                @endphp
+
+                                                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ $statusClasses[$visit->status] ?? 'bg-gray-100 text-gray-800' }}">
+                                                    {{ ucfirst($visit->status) }}
+                                                </span>
+                                            </td>
+
+                                            {{-- <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                                                 @if($visit->arrived_at_gate)
                                                 <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
                                                     Arrived at {{ \Carbon\Carbon::parse($visit->arrived_at_gate)->format('H:i A') }}
@@ -295,7 +309,7 @@
                                                     Awaiting Arrival
                                                 </span>
                                                 @endif
-                                            </td>
+                                            </td> --}}
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right space-x-2">
                                                 <button onclick="checkInVisitor({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-[#07ab8c]  hover:bg-primary text-white">
                                                     Check In
