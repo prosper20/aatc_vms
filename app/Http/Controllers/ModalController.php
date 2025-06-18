@@ -90,7 +90,11 @@ class ModalController extends Controller
                     'visit_date' => $visitDateTime,
                     'reason' => $data['reason'] ?? null,
                     'status' => 'pending',
-                    'unique_code' => Str::uuid(),
+                    // 'unique_code' => Str::uuid(),
+                    'unique_code' => strtoupper(
+                        dechex(time() % 0xFFFF) .
+                        dechex(rand(0, 0xFFFF))
+                    ),
                     'floor_of_visit' => $data['floor'],
                     'checked_in_at' => null,
                     'checked_out_at' => null,
