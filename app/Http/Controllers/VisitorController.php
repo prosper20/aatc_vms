@@ -49,6 +49,7 @@ public function store(Request $request)
         'reason' => $data['reason'],
         'status' => 'pending',
         'unique_code' => strtoupper(Str::random(10)),
+        'verification_message' => 'Visitor has not arrived at the gate',
     ]);
 
     return redirect()->back()->with('success', __('Visit scheduled successfully.'));
@@ -88,6 +89,7 @@ public function import(Request $request)
             'reason' => $data['reason'],
             'status' => 'pending',
             'unique_code' => strtoupper(Str::random(10)),
+            'verification_message' => 'Visitor has not arrived at the gate',
         ]);
     }
 

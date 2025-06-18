@@ -129,8 +129,34 @@
     </style>
 </head>
 <body>
+    <div class="header-bar">
+        <div class="d-flex align-items-center">
+            <a href="{{ route('home') }}" class="me-3">
+                <img src="{{ asset('assets/logo-green-yellow.png') }}" alt="{{ __('Logo') }}" style="height: 40px;">
+            </a>
 
-<div class="header-bar">
+            @include('partials.language_switcher')
+        </div>
+
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center me-3">
+                @if(auth('staff')->user()->profile_completed)
+                    <div class="profile-placeholder me-2" style="background-color: #14532d; color: white; display: flex; align-items: center; justify-content: center;">
+                        {{ strtoupper(substr(auth('staff')->user()->name, 0, 1)) }}
+                    </div>
+                @endif
+                <div class="employee-name">{{ __('Welcome, :name', ['name' => auth('staff')->user()->name ?? __('Staff')]) }}</div>
+            </div>
+
+            <form method="POST" action="{{ route('logout') }}" class="mb-0">
+                @csrf
+                <button type="submit" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-box-arrow-right"></i> {{ __('Logout') }}
+                </button>
+            </form>
+        </div>
+    </div>
+{{-- <div class="header-bar">
     <img src="{{ asset('assets/logo-green-yellow.png') }}" alt="{{ __('Logo') }}">
     <a href="{{ route('home') }}" class="btn btn-outline-light me-2" style="margin-right: 10px;">
         <i class="bi bi-arrow-left"></i> {{ __('Back to Dashboard') }}
@@ -141,7 +167,7 @@
         @csrf
         <button type="submit" class="btn btn-danger">{{ __('Logout') }}</button>
     </form>
-</div>
+</div> --}}
 
 <div class="container">
     <h2 class="mb-4">{{ __('Register Visitors') }}</h2>
