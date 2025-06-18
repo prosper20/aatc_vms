@@ -95,19 +95,18 @@ class ScannerController extends Controller
         $visit->update([
             'arrived_at_gate' => now(),
             'verification_passed' => true,
-            'verification_message' => 'Visitor checked in successfully at gate',
+            'verification_message' => 'Security Verification Successful',
             'verified_by' => $request->verified_by,
             'mode_of_arrival' => $request->mode_of_arrival,
             'plate_number' => $request->mode_of_arrival === 'vehicle' ? $request->plate_number : null,
             'vehicle_type' => $request->mode_of_arrival === 'vehicle' ? $request->vehicle_type : null,
-            'status' => 'Checked In'
         ]);
 
         $operative = Operative::find($request->verified_by);
 
         return response()->json([
             'success' => true,
-            'message' => "Visitor checked in successfully by {$operative->name}",
+            'message' => "Security Verification Completed",
             'data' => $visit->fresh(['visitor', 'staff'])
         ]);
     }
