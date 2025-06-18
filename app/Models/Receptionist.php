@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Receptionist extends Authenticatable
 {
     protected $fillable = [
-        'name', 'email', 'password', 'profile_completed'
+        'username', 'name', 'email', 'password'
     ];
 
     public $timestamps = true;

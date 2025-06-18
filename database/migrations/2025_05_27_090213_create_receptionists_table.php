@@ -6,14 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
 {
     Schema::create('receptionists', function (Blueprint $table) {
         $table->id();
+        $table->string('username')->unique();
         $table->string('name');
         $table->string('email')->unique();
         $table->string('password');
-        $table->boolean('profile_completed')->default(false);
         $table->rememberToken();
         $table->timestamps();
     });
