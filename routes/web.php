@@ -24,7 +24,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\ModalController;
 use App\Http\Controllers\VisitorHistoryController;
 use App\Http\Controllers\PendingVisitsController;
+use App\Http\Controllers\StaffDashboardController;
 
+use App\Mail\VisitApprovedEmail;
 
 
 
@@ -61,6 +63,21 @@ Route::post('/upload-visitors-csv', [ModalController::class, 'uploadCSV'])
     ->middleware('auth:staff')
     ->name('upload.visitors.csv');
 
+    Route::prefix('staff')->middleware('auth:staff')->group(function() {
+        // Dashboard
+        Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('staff.dashboard');
+
+        // Visit actions
+        Route::post('/visits/invite', [StaffDashboardController::class, 'sendInvitation'])->name('staff.dashboard.invite');
+        Route::get('/visits/{visit}/details', [StaffDashboardController::class, 'getVisitDetails'])->name('staff.visits.details');
+        Route::post('/visits/{visit}/cancel', [StaffDashboardController::class, 'cancelVisit'])->name('staff.visits.cancel');
+        Route::post('/visits/{visit}/resubmit', [StaffDashboardController::class, 'resubmitVisit'])->name('staff.visits.resubmit');
+        Route::post('/visits/{visit}/resend-code', [StaffDashboardController::class, 'resendCode'])->name('staff.visits.resend-code');
+        Route::post('/visits/edit', [StaffDashboardController::class, 'editVisit'])->name('staff.dashboard.edit');
+
+        // Logout
+        Route::post('/logout', [StaffAuthController::class, 'logout'])->name('staff.logout');
+    });
 
 // Reception Staff Routes
 Route::prefix('reception')->name('reception.')->group(function () {
@@ -158,23 +175,21 @@ Route::prefix('sm')->name('sm.')->group(function () {
         Route::get('/pending-visits/export', [PendingVisitsController::class, 'export'])->name('pending-visits.export');
     });
 });
-// Route::prefix('sm')->name('sm.')->group(function () {
-//     // Authentication Routes
-//     Route::get('/login', [SmController::class, 'showLoginForm'])->name('sm.login');
-//     Route::post('/login', [SmController::class, 'login'])->name('sm.login.submit');
-//     // Protected Dashboard Routes
-//     Route::middleware(['auth:sm'])->group(function () {
-//         Route::get('/dashboard', [SmController::class, 'dashboard'])->name('sm.dashboard');
-//         Route::post('/logout', [SmController::class, 'logout'])->name('sm.logout');
-//         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-//         Route::post('/visits/{visit}/approve', [VisitController::class, 'approve'])->name('visits.approve');
-//         Route::post('/visits/{visit}/deny', [VisitController::class, 'deny'])->name('visits.deny');
-//         Route::get('/visits/pending', [VisitController::class, 'pending'])->name('visits.pending');
-//         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
-//         Route::get('/analytics/export', function () {
-//             return Excel::download(new VisitsExport, 'visitors_report.xlsx');
-//         });
-//     });
-// });
 
+use App\Models\Visit;
+Route::get('/test-email', function () {
+    // Simulate a Visit model
+    $visit = Visit::first(); // or create a dummy Visit model
 
+    if (!$visit) {
+        $visit = new Visit();
+        $visit->visitor_name = 'John Doe';
+        $visit->visit_date = now()->format('Y-m-d');
+        $visit->unique_code = 'ABC123';
+    }
+
+    // Send email to your email for testing
+    Mail::to('bobsonconnect@gmail.com')->send(new VisitApprovedEmail($visit));
+
+    return 'Test email sent!';
+});
