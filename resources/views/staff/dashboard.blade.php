@@ -67,7 +67,7 @@
 </head>
 
 <body class="min-h-screen bg-gray-50">
-    <header class="!bg-gradient-to-br !from-[#22807e] !to-[#00aa8c] text-white shadow-lg sticky top-0 z-50">
+    <header class="bg-[#22807e] text-white shadow-lg sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-3 lg:py-6 md:py-4">
                 <div class="flex items-center space-x-3 md:space-x-4">
@@ -579,9 +579,9 @@
                                     </div>
 
                                     <!-- Current Guest Summary -->
-                                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                                        <h4 class="text-sm font-medium text-blue-900 mb-2">Current Guest Summary</h4>
-                                        <div class="text-sm text-blue-700 space-y-1" id="guest-summary">
+                                    <div class="bg-blue-50 p-4 rounded-lg border border-green-200">
+                                        <h4 class="text-sm font-medium text-green-900 mb-2">Current Guest Summary</h4>
+                                        <div class="text-sm text-green-700 space-y-1" id="guest-summary">
                                             <p><strong>Name:</strong> <span id="summary-name">Not specified</span></p>
                                             <p><strong>Email:</strong> <span id="summary-email">Not specified</span></p>
                                             <p><strong>Date:</strong> <span id="summary-date">Not specified</span></p>
@@ -593,7 +593,7 @@
 
                             <!-- Submit Button -->
                             <div class="flex justify-end mt-8">
-                                <button type="submit" id="submit-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-md font-medium">
+                                <button type="submit" id="submit-btn" class="bg-[#22807e] hover:bg-[#00aa8c] text-white px-8 py-2 rounded-md font-medium">
                                     Send All Invitations (<span id="submit-count">1</span>)
                                 </button>
                             </div>
@@ -695,7 +695,7 @@
                                             <button onclick="cancelVisit({{ $visit->id }})" class="inline-flex items-center px-3 py-1 border border-red-200 text-sm font-medium rounded-md text-red-600 bg-white hover:bg-red-50">
                                                 Cancel
                                             </button>
-                                            <button onclick="editVisit({{ $visit->id }})" class="inline-flex items-center px-3 py-1 border border-blue-200 text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50">
+                                            <button onclick="editVisit({{ $visit->id }})" class="inline-flex items-center px-3 py-1 border border-green-200 text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50">
                                                 Edit
                                             </button>
                                         @endif
@@ -949,7 +949,7 @@
                     </form>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" onclick="submitEditForm()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    <button type="button" onclick="submitEditForm()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#22807e] hover:bg-[#00aa8c] text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
                         Save Changes
                     </button>
                     <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
