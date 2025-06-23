@@ -51,7 +51,8 @@ RUN composer install --no-dev --optimize-autoloader
 RUN npm install && npm run build
 
 # Create .env file if it doesn't exist
-RUN if [ ! -f .env ]; then cp .env.example .env; fi
+# RUN if [ ! -f .env ]; then cp .env.example .env; fi
+RUN [ -f .env.example ] && cp .env.example .env || echo ".env not found, skipping"
 
 # Generate application key
 RUN php artisan key:generate
