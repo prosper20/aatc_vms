@@ -9,6 +9,7 @@ use App\Models\AccessCard;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class StaffDashboardController extends Controller
 {
@@ -18,39 +19,37 @@ class StaffDashboardController extends Controller
     }
 
     public function index(Request $request)
-    {
-        $staff = auth('staff')->user();
-        $staffId = $staff->id;
+{
+    $staff = auth('staff')->user();
+    $staffId = $staff->id;
 
-        // Get date range for comparison (last 30 days vs previous 30 days)
-        $currentPeriodStart = Carbon::now()->subDays(30);
-        $previousPeriodStart = Carbon::now()->subDays(60);
-        $previousPeriodEnd = Carbon::now()->subDays(30);
+    // Get date range for comparison (last 30 days vs previous 30 days)
+    $currentPeriodStart = Carbon::now()->subDays(30);
+    $previousPeriodStart = Carbon::now()->subDays(60);
+    $previousPeriodEnd = Carbon::now()->subDays(30);
 
-        // --- Dashboard Statistics ---
+    // --- Dashboard Statistics ---
 
-        // Total Invitations (current staff's invitations in last 30 days)
-        $totalInvitations = Visit::where('staff_id', $staffId)
-            ->where('created_at', '>=', $currentPeriodStart)
-            ->count();
+    // Total Invitations (all time for current staff)
+    $totalInvitations = Visit::where('staff_id', $staffId)->count();
 
-        $previousTotalInvitations = Visit::where('staff_id', $staffId)
-            ->whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])
-            ->count();
+    $previousTotalInvitations = Visit::where('staff_id', $staffId)
+        ->whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])
+        ->count();
 
-        $percentageTotalInvitations = $this->calculatePercentageChange($totalInvitations, $previousTotalInvitations);
+    $percentageTotalInvitations = $this->calculatePercentageChange($totalInvitations, $previousTotalInvitations);
 
-        // Pending Approval
-        $pendingApproval = Visit::where('staff_id', $staffId)
-            ->where('status', 'pending')
-            ->count();
+    // Pending Approval (all time for current staff)
+    $pendingApproval = Visit::where('staff_id', $staffId)
+        ->where('status', 'pending')
+        ->count();
 
-        $previousPendingApproval = Visit::where('staff_id', $staffId)
-            ->where('status', 'pending')
-            ->whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])
-            ->count();
+    $previousPendingApproval = Visit::where('staff_id', $staffId)
+        ->where('status', 'pending')
+        ->whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])
+        ->count();
 
-        $percentagePendingApproval = $this->calculatePercentageChange($pendingApproval, $previousPendingApproval);
+    $percentagePendingApproval = $this->calculatePercentageChange($pendingApproval, $previousPendingApproval);
 
         // Approved Today
         $approvedToday = Visit::where('staff_id', $staffId)
@@ -63,135 +62,208 @@ class StaffDashboardController extends Controller
             ->whereDate('created_at', Carbon::yesterday())
             ->count();
 
-        $percentageApproved = $this->calculatePercentageChange($approvedToday, $previousApprovedToday);
+        $percentageApprovedToday = $this->calculatePercentageChange($approvedToday, $previousApprovedToday);
 
-        // Cancelled/Denied
-        $denied = Visit::where('staff_id', $staffId)
-            ->where('status', 'rejected')
-            ->where('created_at', '>=', $currentPeriodStart)
-            ->count();
+    // Approved (all time for current staff)
+    $approved = Visit::where('staff_id', $staffId)
+        ->where('status', 'approved')
+        ->count();
 
-        $previousDenied = Visit::where('staff_id', $staffId)
-            ->where('status', 'rejected')
-            ->whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])
-            ->count();
+    $previousApproved = Visit::where('staff_id', $staffId)
+        ->where('status', 'approved')
+        ->whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])
+        ->count();
 
-        $percentageDenied = $this->calculatePercentageChange($denied, $previousDenied);
+    $percentageApproved = $this->calculatePercentageChange($approved, $previousApproved);
 
-        // Staff details
-        $fullName = $staff->name ?? '';
-        $staffEmail = $staff->email ?? '';
-        $staffId = $staff->id ?? '';
+    // Cancelled/Denied (all time for current staff)
+    $denied = Visit::where('staff_id', $staffId)
+        ->where('status', 'rejected')
+        ->count();
 
-        // --- Visit Lists ---
+    $previousDenied = Visit::where('staff_id', $staffId)
+        ->where('status', 'rejected')
+        ->whereBetween('created_at', [$previousPeriodStart, $previousPeriodEnd])
+        ->count();
 
-        // Active Visits (with pagination)
-        $activeVisits = Visit::with(['visitor', 'staff'])
-            ->where('staff_id', $staffId)
-            ->whereIn('status', ['pending', 'approved'])
-            ->where('visit_date', '>=', Carbon::today())
-            ->orderBy('visit_date', 'asc')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10, ['*'], 'active_page');
+    $percentageDenied = $this->calculatePercentageChange($denied, $previousDenied);
 
-        // Visit History (with pagination)
-        $visitHistory = Visit::with(['visitor', 'staff'])
-            ->where('staff_id', $staffId)
-            ->where(function($query) {
-                $query->where('visit_date', '<', Carbon::today())
-                      ->orWhere('status', 'rejected')
-                      ->orWhere('is_checked_out', true);
-            })
-            ->orderBy('visit_date', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10, ['*'], 'history_page');
+    // --- Ratio Percentages (What portion of total invitations) ---
 
-        // Floor options for the form
-        $floorOptions = [
-            'ground' => 'Ground Floor - Reception',
-            '1st' => '1st Floor - HR & Admin',
-            '2nd' => '2nd Floor - Finance',
-            '3rd' => '3rd Floor - IT Department',
-            '4th' => '4th Floor - Management',
-            '5th' => '5th Floor - Conference Rooms',
-        ];
+    // Calculate what percentage of total invitations are approved
+    $approvedRatioPercentage = $totalInvitations > 0 ? round(($approved / $totalInvitations) * 100, 1) : 0;
 
-        return view('staff.dashboard', compact(
-            'totalInvitations',
-            'percentageTotalInvitations',
-            'pendingApproval',
-            'percentagePendingApproval',
-            'approvedToday',
-            'percentageApproved',
-            'denied',
-            'percentageDenied',
-            'fullName',
-            'staffEmail',
-            'staffId',
-            'activeVisits',
-            'visitHistory',
-            'floorOptions'
-        ));
+    // Calculate what percentage of total invitations are pending
+    $pendingRatioPercentage = $totalInvitations > 0 ? round(($pendingApproval / $totalInvitations) * 100, 1) : 0;
+
+    // Calculate what percentage of total invitations are denied
+    $deniedRatioPercentage = $totalInvitations > 0 ? round(($denied / $totalInvitations) * 100, 1) : 0;
+
+    // Staff details
+    $fullName = $staff->name ?? '';
+    $staffEmail = $staff->email ?? '';
+    $staffId = $staff->id ?? '';
+
+    // --- Visit Lists ---
+
+    // Active Visits (with pagination)
+    $activeVisits = Visit::with(['visitor', 'staff'])
+        ->where('staff_id', $staffId)
+        ->whereIn('status', ['pending', 'approved'])
+        ->where('visit_date', '>=', Carbon::today())
+        ->orderBy('visit_date', 'asc')
+        ->orderBy('created_at', 'desc')
+        ->paginate(10, ['*'], 'active_page');
+
+    // Visit History (with pagination)
+    $visitHistory = Visit::with(['visitor', 'staff'])
+        ->where('staff_id', $staffId)
+        ->where(function($query) {
+            $query->where('visit_date', '<', Carbon::today())
+                  ->orWhere('status', 'rejected')
+                  ->orWhere('is_checked_out', true);
+        })
+        ->orderBy('visit_date', 'desc')
+        ->orderBy('created_at', 'desc')
+        ->paginate(10, ['*'], 'history_page');
+
+    // Floor options for the form
+    $floorOptions = [
+        'ground' => 'Ground Floor',
+        'mezzanine' => 'Mezzanine',
+        '1st' => 'Floor 1',
+        '2nd' => 'Floor 2',
+        '3rd' => 'Floor 3',
+        '4th' => 'Floor 4',
+        '5th' => 'Floor 5',
+        '6th' => 'Floor 6',
+        '7th' => 'Floor 7',
+        '8th' => 'Floor 8',
+        '9th' => 'Floor 9',
+    ];
+
+
+    return view('staff.dashboard', compact(
+        'totalInvitations',
+        'percentageTotalInvitations',
+        'pendingApproval',
+        'percentagePendingApproval',
+        'approved',
+        'approvedToday',
+        'percentageApprovedToday',
+        'percentageApproved',
+        'denied',
+        'percentageDenied',
+        'approvedRatioPercentage',
+        'pendingRatioPercentage',
+        'deniedRatioPercentage',
+        'fullName',
+        'staffEmail',
+        'staffId',
+        'activeVisits',
+        'visitHistory',
+        'floorOptions'
+    ));
+}
+
+    public function sendInvitation(Request $request)
+{
+    // Verify staff is authenticated
+    if (!auth('staff')->check()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Unauthorized - Staff not authenticated',
+        ], 401);
     }
 
-    /**
-     * Send invitation to guest
-     */
-    public function sendInvitation(Request $request)
-    {
-        $request->validate([
-            'guest_name' => 'required|string|max:255',
-            'guest_email' => 'required|email|max:255',
-            'guest_phone' => 'required|string|max:20',
-            'organization' => 'nullable|string|max:255',
-            'visit_reason' => 'required|string|max:500',
-            'visit_date' => 'required|date|after_or_equal:today',
-            'visit_time' => 'required',
-            'floor' => 'required|string',
-        ]);
+    // Get the authenticated staff member
+    $staff = auth('staff')->user();
+    $staffId = $staff->id;
 
-        try {
-            // Create or find visitor
+    $request->validate([
+        'guests' => 'required|array',
+        'guests.*.name' => 'required|string|max:255',
+        'guests.*.email' => 'required|email|max:255',
+        'guests.*.phone' => 'required|string|max:20',
+        'guests.*.organization' => 'nullable|string|max:255',
+        'guests.*.reason' => 'required|string|max:500',
+        'guests.*.date' => 'required|date|after_or_equal:today',
+        'guests.*.time' => 'required',
+        'guests.*.floor' => 'required|string|max:50',
+    ]);
+
+    DB::beginTransaction();
+
+    try {
+        $createdVisits = [];
+
+        foreach ($request->guests as $guestData) {
+            $visitDateTime = Carbon::createFromFormat(
+                'Y-m-d H:i',
+                $guestData['date'] . ' ' . $guestData['time']
+            );
+
+            // Find or create visitor
             $visitor = Visitor::firstOrCreate(
-                ['email' => $request->guest_email],
+                ['email' => $guestData['email']],
                 [
-                    'name' => $request->guest_name,
-                    'phone' => $request->guest_phone,
-                    'organization' => $request->organization,
+                    'name' => $guestData['name'],
+                    'phone' => $guestData['phone'],
+                    'organization' => $guestData['organization'] ?? null,
                 ]
             );
 
-            // Create visit
+            // Generate unique code (similar to storeVisitors but more readable)
+            $uniqueCode = strtoupper(
+                dechex(time() % 0xFFFF) . '-' .
+                dechex(rand(0, 0xFFFF))
+            );
+
+            // Create visit record
             $visit = Visit::create([
                 'visitor_id' => $visitor->id,
-                'staff_id' => auth('staff')->id(),
-                'visit_date' => $request->visit_date,
-                'reason' => $request->visit_reason,
+                'staff_id' => $staffId,
+                'visit_date' => $visitDateTime,
+                'reason' => $guestData['reason'],
                 'status' => 'pending',
-                'unique_code' => 'VMS-' . date('Y') . '-' . str_pad(Visit::count() + 1, 3, '0', STR_PAD_LEFT),
-                'floor_of_visit' => $request->floor,
+                'unique_code' => $uniqueCode,
+                'floor_of_visit' => $guestData['floor'],
+                'checked_in_at' => null,
+                'checked_out_at' => null,
+                'checkin_by' => null,
+                'checkout_by' => null,
+                'is_checked_in' => false,
+                'is_checked_out' => false,
+                'verification_message' => 'Visitor has not arrived at the gate',
             ]);
 
-            // Here you would typically send an email to the visitor
-            // Mail::to($visitor->email)->send(new VisitorInvitation($visit));
+            $createdVisits[] = $visit;
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Invitation sent successfully! Your guest will receive an email with the invitation code.',
-                'visit' => $visit->load('visitor')
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to send invitation. Please try again.'
-            ], 500);
         }
-    }
 
-    /**
-     * Cancel visit invitation
-     */
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invitations sent successfully!',
+            'data' => [
+                'count' => count($createdVisits),
+                'visits' => $createdVisits,
+            ]
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error('Invitation failed: ' . $e->getMessage());
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to send invitations. Please try again.',
+            'error' => config('app.debug') ? $e->getMessage() : null
+        ], 500);
+    }
+}
+
     public function cancelVisit(Visit $visit)
     {
         // Check if the visit belongs to the current staff
@@ -218,9 +290,6 @@ class StaffDashboardController extends Controller
         ]);
     }
 
-    /**
-     * Edit visit invitation
-     */
     public function editVisit(Request $request, Visit $visit)
     {
         // Check if the visit belongs to the current staff
@@ -279,9 +348,6 @@ class StaffDashboardController extends Controller
         }
     }
 
-    /**
-     * Resubmit denied visit
-     */
     public function resubmitVisit(Visit $visit)
     {
         // Check if the visit belongs to the current staff
@@ -311,9 +377,6 @@ class StaffDashboardController extends Controller
         ]);
     }
 
-    /**
-     * Resend invitation code
-     */
     public function resendCode(Visit $visit)
     {
         // Check if the visit belongs to the current staff
@@ -333,9 +396,6 @@ class StaffDashboardController extends Controller
         }
 
         try {
-            // Here you would typically resend the email
-            // Mail::to($visit->visitor->email)->send(new VisitorInvitation($visit));
-
             return response()->json([
                 'success' => true,
                 'message' => 'Invitation code resent successfully'
@@ -349,9 +409,6 @@ class StaffDashboardController extends Controller
         }
     }
 
-    /**
-     * Get visit details for editing
-     */
     public function getVisitDetails(Visit $visit)
     {
         // Check if the visit belongs to the current staff
@@ -368,9 +425,6 @@ class StaffDashboardController extends Controller
         ]);
     }
 
-    /**
-     * Calculate percentage change between two values
-     */
     private function calculatePercentageChange($current, $previous)
     {
         if ($previous == 0) {

@@ -199,23 +199,33 @@ class ReceptionDashboardController extends Controller
         ->orderBy('visit_date', 'asc')
         ->get();
 
+    // Expected Today
+    $approvedPendingCheckin = Visit::with(['visitor', 'staff'])
+        ->where('status', 'approved')
+        ->where('is_checked_in', false)
+        ->orderBy('created_at', 'desc')
+        // ->orderBy('visit_date', 'asc')
+        ->get();
+
     // Checked In Today
     $checkedInVisits = Visit::with(['visitor', 'staff', 'accessCard'])
         ->where('is_checked_in', true)
-        ->whereDate('checked_in_at', $today)
+        ->where('is_checked_out', false)
+        // ->whereDate('checked_in_at', $today)
         ->orderBy('checked_in_at', 'desc')
         ->get();
 
     // Checked Out Today
     $checkedOutVisits = Visit::with(['visitor', 'staff', 'accessCard'])
         ->where('is_checked_out', true)
-        ->whereDate('checked_out_at', $today)
+        // ->whereDate('checked_out_at', $today)
         ->orderBy('checked_out_at', 'desc')
         ->get();
 
     return view('reception.dashboard', compact(
         'expectedTodayCount',
         'checkedInCount',
+        'approvedPendingCheckin',
         'checkedOutCount',
         'cardsAvailable',
         'cardsIssuedCount',

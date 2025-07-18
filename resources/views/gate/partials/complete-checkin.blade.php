@@ -153,7 +153,7 @@
             : 'bg-[#07AF8B] hover:bg-[#007570] active:translate-y-0 hover:-translate-y-px cursor-pointer'
     ]"
 >
-    <span x-text="isLoading ? 'Finishing...' : 'Complete'"></span>
+    <span x-text="isLoading ? 'Checking visitor in...' : 'Complete Checkin'"></span>
 </button>
 
 

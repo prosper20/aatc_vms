@@ -9,15 +9,13 @@
     <aside id="sidebar" class="w-64 bg-white shadow-xl fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:inset-0">
         <div class="flex flex-col h-full">
             <!-- Logo Section -->
-            <div class="flex items-center justify-center p-6 border-b border-gray-100">
-                <div class="flex items-center space-y-3 flex-col">
-                    <div class=" bg-gradient-to-br from-[#07AF8B] to-[#007570] rounded-xl flex items-center justify-center">
-                        <img src="{{ asset('assets/logo-green-yellow.png') }}" alt={{__("Logo")}} class="h-10 md:h-12">
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold text-[#007570]">Abuja AATC-VMS</h1>
-                        <p class="text-xs text-gray-500">Security Portal</p>
-                    </div>
+            <div class="flex flex-col justify-center space-x-3 px-4 py-3">
+                <div class="p-2">
+                    <img src="{{ asset('assets/logo-green-yellow.png') }}" alt="{{ __('Logo') }}" class="h-10 md:h-12">
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-[#007570]">Abuja AATC-VMS</h1>
+                    <p class="text-xs text-gray-500">Security Portal</p>
                 </div>
             </div>
 
@@ -52,9 +50,6 @@
             <!-- User Profile & Logout -->
             <div class="border-t border-gray-100 p-4">
                 <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 bg-gradient-to-br from-[#07AF8B] to-[#007570] rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-white text-sm"></i>
-                    </div>
                     <div class="ml-3">
                         <p class="text-sm font-medium text-gray-900">{{ Auth::guard('sm')->user()->name ?? 'Security Manager' }}</p>
                         <p class="text-xs text-gray-500">{{ Auth::guard('sm')->user()->email ?? 'manager@example.com' }}</p>
@@ -63,7 +58,7 @@
 
                 <form method="POST" action="{{ route('sm.logout') }}" class="w-full">
                     @csrf
-                    <button type="submit" class="w-full flex items-center px-4 py-3 text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200 group">
+                    <button type="submit" class="w-full flex items-center ml-3 py-3 text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200 group">
                         <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i>
                         <span class="font-medium">Logout</span>
                     </button>
@@ -92,7 +87,7 @@
 
                 <!-- Right Section -->
                 <div class="flex items-center space-x-4">
-                    <button onclick="exportData()" class="inline-flex items-center px-4 py-2 text-sm font-medium text-[#07AF8B] bg-[#07AF8B]/10 hover:bg-[#07AF8B]/20 rounded-lg transition-colors duration-200">
+                    <button onclick="exportData()" class="inline-flex items-center px-4 py-2 text-sm font-medium bg-[#FFCA00] hover:bg-[#e0b200] rounded-lg transition-colors duration-200">
                         <i class="fas fa-download mr-2"></i>
                         Export Data
                     </button>
@@ -146,7 +141,7 @@
                     </div>
 
                     <div class="flex items-center space-x-3">
-                        <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[#07AF8B] hover:bg-[#007570] rounded-lg transition-colors duration-200">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium bg-[#FFCA00] hover:bg-[#e0b200] rounded-lg transition-colors duration-200">
                             <i class="fas fa-search mr-2"></i>
                             Apply Filters
                         </button>
@@ -176,16 +171,24 @@
                 </div>
 
                 <div class="overflow-x-auto">
+                    <div >
+                        <div class="p-0 sm:p-4 md:p-6 inline-flex h-10 items-center justify-center bg-gray-100 text-gray-500 w-full">
+                            <div class="grid grid-cols-3 w-full">
+                                <button class="inline-flex items-center justify-start whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-gray-900">
+                                    <span >Visitor</span>
+                                </button>
+
+                                <button class="inline-flex items-center justify-start md:justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-gray-900">
+                                    <span >Host</span>
+                                </button>
+
+                                <button class="inline-flex items-center justify-end whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-gray-900">
+                                    <span >Time of Arival</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <table class="w-full">
-                        {{-- <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitor</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visit Details</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Staff</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead> --}}
                         <tbody class="bg-white divide-y divide-gray-200" id="visitor-container">
                             @include('partials.visitor-list', ['visitors' => $visits])
                         </tbody>

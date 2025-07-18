@@ -11,6 +11,7 @@ class VisitorHistoryController extends Controller
 {
     public function index(Request $request)
     {
+        $pendingVisits = Visit::with(['visitor', 'staff'])->where('status', 'pending')->get();
         $query = Visit::with(['visitor', 'staff'])
             ->whereIn('status', ['approved', 'denied', 'completed']);
 
@@ -64,14 +65,15 @@ class VisitorHistoryController extends Controller
         // Get unique floors for filter dropdown
         $floors = Visit::distinct()->pluck('floor_of_visit')->filter()->sort()->values();
 
-        return view('dashboard.visitor-history', compact('visits', 'stats', 'floors'));
+        return view('dashboard.visitor-history', compact('visits', 'stats', 'floors', 'pendingVisits'));
     }
 
     public function show(Visit $visit)
     {
+        $pendingVisits = Visit::with(['visitor', 'staff'])->where('status', 'pending')->get();
         $visit->load(['visitor', 'staff']);
 
-        return view('dashboard.visitor-history-detail', compact('visit'));
+        return view('dashboard.visitor-history-detail', compact('visit', 'pendingVisits'));
     }
 
     public function export(Request $request)

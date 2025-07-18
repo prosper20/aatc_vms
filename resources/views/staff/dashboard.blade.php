@@ -1,4 +1,261 @@
-<!DOCTYPE html>
+@extends('layouts.staff')
+
+@section('title', 'Staff Dashboard')
+
+@section('body')
+    <x-staff-header
+        :user="auth('staff')->user()"
+        :full-name="$fullName"
+    />
+
+    <x-staff-sidebar
+        :user="auth('staff')->user()"
+        :full-name="$fullName"
+        :staff-email="$staffEmail"
+    />
+
+    <main class="max-w-[84rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <x-dashboard-stats
+            :stats="compact(
+                'totalInvitations',
+                'percentageTotalInvitations',
+                'approvedToday',
+                'approved',
+                'percentageApproved',
+                'approvedRatioPercentage',
+                'pendingRatioPercentage',
+                'deniedRatioPercentage',
+                'pendingApproval',
+                'percentagePendingApproval',
+                'denied',
+                'percentageDenied'
+            )"
+        />
+    <!-- Visitor Management Card -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+        <div class="border-b border-gray-200">
+            <nav class="flex space-x-8" aria-label="Tabs">
+                <button onclick="showTab('invite')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-[#fecd01] text-[#007570]" data-tab="invite">
+                    Invite Guest
+                </button>
+                <button onclick="showTab('active')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="active">
+                    Active Visits
+                </button>
+                <button onclick="showTab('history')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="history">
+                    Visit History
+                </button>
+            </nav>
+        </div>
+
+        <div class="p-6">
+            <!-- Invite Guest Tab -->
+            <div id="invite-tab" class="tab-content">
+                <livewire:staff.invite-guest />
+            </div>
+
+            <!-- Active Visits Tab -->
+            <div id="active-tab" class="tab-content hidden">
+                <livewire:staff.active-visits />
+            </div>
+
+            <!-- Visit History Tab -->
+            <x-visit-history-tab :visitHistory="$visitHistory" />
+        </div>
+
+        {{-- <div class="border-b border-gray-200">
+            <nav class="flex space-x-8" aria-label="Tabs">
+                <button onclick="showTab('invite')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-[#fecd01] text-[#007570]" data-tab="invite">
+                    Invite Guest
+                </button>
+                <button onclick="showTab('active')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="active">
+                    Active Visits
+                </button>
+                <button onclick="showTab('history')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="history">
+                    Visit History
+                </button>
+            </nav>
+        </div>
+
+        <div class="p-6">
+            <!-- Invite Guest Tab -->
+            <x-invite-guest-tab />
+
+            <!-- Active Visits Tab -->
+            <x-active-visits-tab :activeVisits="$activeVisits" />
+
+            <!-- Visit History Tab -->
+            <x-visit-history-tab :visitHistory="$visitHistory" />
+        </div> --}}
+    </div>
+</main>
+
+<!-- Edit Visit Modal -->
+<div id="edit-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Edit Visit Details</h3>
+                <form id="edit-form" class="space-y-6">
+                    @csrf
+                    <input type="hidden" name="visit_id" id="edit_visit_id">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div class="mb-6">
+                            <label for="edit_guest_name" class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                            <input type="text" name="guest_name" id="edit_guest_name" required
+                                   class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                   placeholder="Enter guest's full name">
+                        </div>
+                        <div class="mb-6">
+                            <label for="edit_guest_email" class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                            <input type="email" name="guest_email" id="edit_guest_email" required
+                                   class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                   placeholder="guest@example.com">
+                        </div>
+                        <div class="mb-6">
+                            <label for="edit_guest_phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                            <input type="tel" name="guest_phone" id="edit_guest_phone" required
+                                   class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                   placeholder="+1 (555) 123-4567">
+                        </div>
+                        <div class="mb-6">
+                            <label for="edit_organization" class="block text-sm font-medium text-gray-700 mb-2">Organization (Optional)</label>
+                            <input type="text" name="organization" id="edit_organization"
+                                   class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                   placeholder="Company name">
+                        </div>
+                        <div class="mb-6">
+                            <label for="edit_visit_date" class="block text-sm font-medium text-gray-700 mb-2">Visit Date *</label>
+                            <input type="date" name="visit_date" id="edit_visit_date" required
+                                   class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
+                        </div>
+                        <div class="mb-6">
+                            <label for="edit_floor" class="block text-sm font-medium text-gray-700 mb-2">Floor/Department *</label>
+                            <select name="floor" id="edit_floor" required
+                                    class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
+                                <option value="">Select floor</option>
+                                <option value="ground">Ground Floor</option>
+                                <option value="mezzanine">Mezzanine</option>
+                                <option value="1st">Floor 1</option>
+                                <option value="2nd">Floor 2</option>
+                                <option value="3rd">Floor 3</option>
+                                <option value="4th">Floor 4</option>
+                                <option value="5th">Floor 5</option>
+                                <option value="6th">Floor 6</option>
+                                <option value="7th">Floor 7</option>
+                                <option value="8th">Floor 8</option>
+                                <option value="9th">Floor 9</option>
+                            </select>
+                        </div>
+                        <div class="sm:col-span-2 mb-6">
+                            <label for="edit_visit_reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for Visit *</label>
+                            <textarea name="visit_reason" id="edit_visit_reason" rows="3" required
+                                      class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                      placeholder="Describe the purpose of the visit"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="submitEditForm()"
+                        class="px-4 py-3 rounded-xl text-white text-base font-medium transition-all duration-200 bg-[#07AF8B] hover:bg-[#007570] active:translate-y-0 hover:-translate-y-px cursor-pointer w-full inline-flex justify-center sm:ml-3 sm:w-auto">
+                    Save Changes
+                </button>
+                <button type="button" onclick="closeModal()"
+                        class="mt-3 w-full inline-flex justify-center px-4 py-3 rounded-xl text-base font-medium border border-gray-300 hover:bg-gray-50 transition-all duration-200 active:translate-y-0 hover:-translate-y-px cursor-pointer sm:mt-0 sm:ml-3 sm:w-auto">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed bottom-4 right-4 hidden">
+    <div class="bg-green-500 text-white px-4 py-2 rounded-md shadow-lg flex items-center">
+        <span id="toast-message"></span>
+        <button onclick="document.getElementById('toast').classList.add('hidden')" class="ml-4">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('notify', event => {
+    alert(event.detail.message);
+});
+</script>
+@endsection
+
+
+
+<!-- Edit Visit Modal -->
+{{-- <div id="edit-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Edit Visit Details</h3>
+                <form id="edit-form" class="space-y-4">
+                    @csrf
+                    <input type="hidden" name="visit_id" id="edit_visit_id">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <label for="edit_guest_name" class="block text-sm font-medium text-gray-700">Full Name *</label>
+                            <input type="text" name="guest_name" id="edit_guest_name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="edit_guest_email" class="block text-sm font-medium text-gray-700">Email Address *</label>
+                            <input type="email" name="guest_email" id="edit_guest_email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="edit_guest_phone" class="block text-sm font-medium text-gray-700">Phone Number *</label>
+                            <input type="tel" name="guest_phone" id="edit_guest_phone" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="edit_organization" class="block text-sm font-medium text-gray-700">Organization</label>
+                            <input type="text" name="organization" id="edit_organization" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="edit_visit_reason" class="block text-sm font-medium text-gray-700">Reason for Visit *</label>
+                            <textarea name="visit_reason" id="edit_visit_reason" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                        </div>
+                        <div>
+                            <label for="edit_visit_date" class="block text-sm font-medium text-gray-700">Visit Date *</label>
+                            <input type="date" name="visit_date" id="edit_visit_date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="edit_floor" class="block text-sm font-medium text-gray-700">Floor/Department *</label>
+                            <select name="floor" id="edit_floor" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="">Select floor or department</option>
+                                @foreach($floorOptions as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="submitEditForm()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#22807e] hover:bg-[#00aa8c] text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Save Changes
+                </button>
+                <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div> --}}
+
+
+{{-- <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -67,19 +324,18 @@
 </head>
 
 <body class="min-h-screen bg-gray-50">
-    <header class="bg-[#22807e] text-white shadow-lg sticky top-0 z-50">
+    <header class="bg-[#ffffff] text-gray-900 shadow-lg sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-3 lg:py-6 md:py-4">
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <div class="flex-shrink-0">
-                        <img src="{{ asset('assets/logo-no-bg.png') }}" alt="Logo" class="h-10 w-auto md:h-12">
+                        <img src="{{ asset('assets/logo-green-yellow.png') }}" alt="Logo" class="h-10 w-auto md:h-12">
                     </div>
                     <div class="hidden sm:block">
                         <h1 class="text-lg md:text-2xl font-semibold leading-tight">Abuja AATC-VMS</h1>
                         <p class="text-xs md:text-[14px] opacity-90">Visitor Management System</p>
                     </div>
                 </div>
-
 
                 <div class="flex items-center space-x-4">
                     <!-- Language Dropdown (Desktop only) -->
@@ -89,24 +345,47 @@
 
                     <!-- Notification Icon -->
                     <div class="relative">
-                        <button onclick="toggleNotifications()" class="p-2 rounded-full hover:bg-white/10 focus:outline-none focus:ring-white">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button onclick="toggleNotifications()" class="p-2 rounded-full bg-yellow-50 hover:bg-yellow-100 focus:outline-none focus:ring-yellow">
+                            <svg class="w-6 h-6 text-[#00aa8c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                             </svg>
-                            {{-- <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 ring-2 ring-white"></span> --}}
                         </button>
 
                         <!-- Notification Dropdown -->
                         <div id="notificationDropdown"
-                            class="hidden absolute right-0 mt-2 w-80 md:w-96 bg-white rounded-xl shadow-lg z-50 transition-all duration-300 ease-in-out">
-                            <div class="p-4 border-b">
+                            class="hidden
+                                   fixed md:absolute
+                                   inset-0 md:inset-auto
+                                   md:right-0 md:mt-2
+                                   w-full md:w-96
+                                   h-full md:h-auto
+                                   bg-white
+                                   md:rounded-xl
+                                   md:shadow-lg
+                                   z-50
+                                   transition-all duration-300 ease-in-out">
+
+                            <!-- Mobile Header with Close Button -->
+                            <div class="flex md:hidden items-center justify-between p-4 border-b bg-white">
+                                <h3 class="text-lg font-semibold text-gray-800">Notifications</h3>
+                                <button onclick="toggleNotifications()" class="p-2 rounded-full hover:bg-gray-100">
+                                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Desktop Header -->
+                            <div class="hidden md:block p-4 border-b">
                                 <h3 class="text-lg font-semibold text-gray-800">Notifications</h3>
                             </div>
-                            <div class="p-4 space-y-3 max-h-96 overflow-y-auto">
+
+                            <!-- Notifications Content -->
+                            <div class="p-4 space-y-3 h-full md:h-auto md:max-h-96 overflow-y-auto">
                                 <!-- Dynamic notifications would go here -->
 
-                                <div class="flex items-center space-x-3 p-3 hover:bg-gray-50">
+                                <div class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg">
                                     <div class="w-2 h-2 bg-yellow-400 rounded-full flex-shrink-0"></div>
                                     <div class="flex-1">
                                         <div class="font-medium text-sm text-gray-700">Pending</div>
@@ -114,38 +393,49 @@
                                     </div>
                                     <div class="text-xs text-gray-500">8:58PM 06/07/2025</div>
                                 </div>
-                                <!-- More notifications... -->
-                            {{-- </div> --}}
 
-                                {{-- <div class="flex items-center space-x-3 p-3 rounded-lg bg-yellow-50">
-                                    <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                                <!-- Add more sample notifications for demonstration -->
+                                <div class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg">
+                                    <div class="w-2 h-2 bg-blue-400 rounded-full flex-shrink-0"></div>
                                     <div class="flex-1">
-                                        <div class="font-medium text-sm">Pending</div>
-                                        <div class="text-sm text-gray-600">Prosper Bobson</div>
+                                        <div class="font-medium text-sm text-gray-700">Completed</div>
+                                        <div class="text-sm text-gray-600">John Smith</div>
                                     </div>
-                                    <div class="text-xs text-gray-500">8:58PM 06/07/2025</div>
-                                </div> --}}
-                                <!-- More notification items -->
+                                    <div class="text-xs text-gray-500">7:30PM 06/07/2025</div>
+                                </div>
+
+                                <div class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg">
+                                    <div class="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
+                                    <div class="flex-1">
+                                        <div class="font-medium text-sm text-gray-700">Approved</div>
+                                        <div class="text-sm text-gray-600">Mary Johnson</div>
+                                    </div>
+                                    <div class="text-xs text-gray-500">6:15PM 06/07/2025</div>
+                                </div>
+
+                                <!-- More notifications... -->
                             </div>
-                            <div class="p-3 border-t text-center">
+
+                            <!-- Footer -->
+                            <div class="p-3 border-t text-center bg-white md:bg-transparent">
                                 <a href="#" class="text-sm text-teal-600 hover:underline">View all notifications</a>
                             </div>
                         </div>
                     </div>
 
-                        <div class="flex items-center space-x-3 hidden md:flex">
-                            <div class="text-right">
-                                <p class="text-xs md:text-[14px]">{{ $fullName }}</p>
-                                <p class="text-xs md:text-[14px]">Location: Abuja</p>
-                            </div>
-                            <button onclick="toggleSidebar()" onclick="toggleSidebar()" class="h-8 w-8 rounded-full bg-blue-100 hover:bg-blue-200 flex items-center justify-center">
-                                <i class="fas fa-user text-[#00aa8c]"></i>
-                            </button>
+                    <div class="flex items-center space-x-3 hidden md:flex">
+                        <div class="text-right">
+                            <p class="text-xs md:text-[14px]">{{ $fullName }}</p>
+                            <p class="text-xs md:text-[14px]">Location: Abuja</p>
                         </div>
+                        <button onclick="toggleSidebar()" class="h-8 w-8 rounded-full bg-yellow-50 hover:bg-yellow-100 flex items-center justify-center">
+                            <i class="fas fa-user text-[#00aa8c]"></i>
+                        </button>
+                    </div>
 
                     <!-- Hamburger Menu (Mobile) -->
-                    <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg hover:bg-white/10">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg hover:bg-yellow-50">
+                        <svg class="w-6 h-6 text-[#00aa8c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     </button>
@@ -279,12 +569,12 @@
         <!-- Dashboard Stats -->
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
 
-            <div class="relative bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-all duration-200 hover:-translate-y-1 overflow-hidden">
+            <div class="relative bg-[#feca01] rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-all duration-200 hover:-translate-y-1 overflow-hidden">
                 <dt>
-                    <div class="absolute bg-[#FFCA00]/10 rounded-xl p-3 flex items-center justify-center">
+                    <div class="absolute bg-white/10 rounded-xl p-3 flex items-center justify-center">
                         <i class="fas fa-users text-orange-600 text-lg" aria-hidden="true"></i>
                     </div>
-                    <p class="ml-16 text-sm font-medium text-gray-600 truncate">Total Invitations</p>
+                    <p class="ml-16 text-sm font-medium text-gray-900 truncate">Total Invitations</p>
                 </dt>
                 <dd class="ml-16 pb-6 flex items-baseline">
                     <p class="text-3xl font-bold text-gray-900">{{ $totalInvitations }}</p>
@@ -294,46 +584,46 @@
                 </dd>
             </div>
 
-            <div class="relative bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-all duration-200 hover:-translate-y-1 overflow-hidden">
+            <div class="relative bg-[#16af8b] rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-all duration-200 hover:-translate-y-1 overflow-hidden">
                 <dt>
-                    <div class="absolute bg-[#FFCA00]/10 rounded-xl p-3 flex items-center justify-center">
-                        <i class="fas fa-clock text-orange-600 text-lg" aria-hidden="true"></i>
+                    <div class="absolute bg-white/10 rounded-xl p-3 flex items-center justify-center">
+                        <i class="fas fa-check-circle text-white text-lg" aria-hidden="true"></i>
                     </div>
-                    <p class="ml-16 text-sm font-medium text-gray-600 truncate">Pending Approval</p>
+                    <p class="ml-16 text-sm font-medium text-white truncate">Approved Today</p>
                 </dt>
                 <dd class="ml-16 pb-6 flex items-baseline">
-                    <p class="text-3xl font-bold text-gray-900">{{ $pendingApproval }}</p>
+                    <p class="text-3xl font-bold text-white">{{ $approvedToday }}</p>
+                    <p class="ml-2 flex items-baseline text-sm font-semibold {{ strpos($percentageApproved, '+') !== false ? 'text-green-600' : (strpos($percentageApproved, '-') !== false ? 'text-red-600' : 'text-gray-700') }}">
+                        {{ $percentageApproved }}
+                    </p>
+                </dd>
+            </div>
+
+            <div class="relative bg-yellow-500 rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-all duration-200 hover:-translate-y-1 overflow-hidden">
+                <dt>
+                    <div class="absolute bg-white/10 rounded-xl p-3 flex items-center justify-center">
+                        <i class="fas fa-clock text-white text-lg" aria-hidden="true"></i>
+                    </div>
+                    <p class="ml-16 text-sm font-medium text-white truncate">Pending Approval</p>
+                </dt>
+                <dd class="ml-16 pb-6 flex items-baseline">
+                    <p class="text-3xl font-bold text-white">{{ $pendingApproval }}</p>
                     <p class="ml-2 flex items-baseline text-sm font-semibold text-gray-500">
                         {{ $percentagePendingApproval }}
                     </p>
                 </dd>
             </div>
 
-            <div class="relative bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-all duration-200 hover:-translate-y-1 overflow-hidden">
+            <div class="relative bg-[#6c757d] rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-all duration-200 hover:-translate-y-1 overflow-hidden">
                 <dt>
-                    <div class="absolute bg-[#FFCA00]/10 rounded-xl p-3 flex items-center justify-center">
-                        <i class="fas fa-check-circle text-green-600 text-lg" aria-hidden="true"></i>
+                    <div class="absolute bg-white/10 rounded-xl p-3 flex items-center justify-center">
+                        <i class="fas fa-times-circle text-white text-lg" aria-hidden="true"></i>
                     </div>
-                    <p class="ml-16 text-sm font-medium text-gray-600 truncate">Approved Today</p>
+                    <p class="ml-16 text-sm font-medium text-white truncate">Cancelled/Denied</p>
                 </dt>
                 <dd class="ml-16 pb-6 flex items-baseline">
-                    <p class="text-3xl font-bold text-gray-900">{{ $approvedToday }}</p>
-                    <p class="ml-2 flex items-baseline text-sm font-semibold {{ strpos($percentageApproved, '+') !== false ? 'text-green-600' : (strpos($percentageApproved, '-') !== false ? 'text-red-600' : 'text-gray-500') }}">
-                        {{ $percentageApproved }}
-                    </p>
-                </dd>
-            </div>
-
-            <div class="relative bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:shadow-md transition-all duration-200 hover:-translate-y-1 overflow-hidden">
-                <dt>
-                    <div class="absolute bg-[#FFCA00]/10 rounded-xl p-3 flex items-center justify-center">
-                        <i class="fas fa-times-circle text-red-600 text-lg" aria-hidden="true"></i>
-                    </div>
-                    <p class="ml-16 text-sm font-medium text-gray-600 truncate">Cancelled/Denied</p>
-                </dt>
-                <dd class="ml-16 pb-6 flex items-baseline">
-                    <p class="text-3xl font-bold text-gray-900">{{ $denied }}</p>
-                    <p class="ml-2 flex items-baseline text-sm font-semibold {{ strpos($percentageDenied, '-') !== false ? 'text-green-600' : (strpos($percentageDenied, '+') !== false ? 'text-red-600' : 'text-gray-500') }}">
+                    <p class="text-3xl font-bold text-white">{{ $denied }}</p>
+                    <p class="ml-2 flex items-baseline text-sm font-semibold {{ strpos($percentageDenied, '-') !== false ? 'text-green-600' : (strpos($percentageDenied, '+') !== false ? 'text-red-500' : 'text-gray-500') }}">
                         {{ $percentageDenied }}
                     </p>
                 </dd>
@@ -345,7 +635,7 @@
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
             <div class="border-b border-gray-200">
                 <nav class="flex space-x-8" aria-label="Tabs">
-                    <button onclick="showTab('invite')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-blue-500 text-blue-600" data-tab="invite">
+                    <button onclick="showTab('invite')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-[#fecd01] text-[#007570]" data-tab="invite">
                         Invite Guest
                     </button>
                     <button onclick="showTab('active')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="active">
@@ -359,81 +649,6 @@
 
             <div class="p-6">
                 <!-- Invite Guest Tab -->
-                {{-- <div id="invite-tab" class="tab-content">
-                    <div class="max-w-2xl">
-                        <div class="mb-6">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-2">Invite a Guest</h2>
-                            <p class="text-gray-600">Fill out the form below to send an invitation to your guest.</p>
-                        </div>
-
-                        <form id="invite-form" class="space-y-6">
-                            @csrf
-                            <!-- Guest Information -->
-                            <div class="bg-gray-50 p-4 rounded-xl">
-                                <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                                    <i class="fas fa-user text-blue-600 mr-2"></i>
-                                    Guest Information
-                                </h3>
-                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <div>
-                                        <label for="guest_name" class="block text-sm font-medium text-gray-700">Full Name *</label>
-                                        <input type="text" name="guest_name" id="guest_name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Enter guest's full name">
-                                    </div>
-                                    <div>
-                                        <label for="guest_email" class="block text-sm font-medium text-gray-700">Email Address *</label>
-                                        <input type="email" name="guest_email" id="guest_email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="guest@example.com">
-                                    </div>
-                                    <div>
-                                        <label for="guest_phone" class="block text-sm font-medium text-gray-700">Phone Number *</label>
-                                        <input type="tel" name="guest_phone" id="guest_phone" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="+1 (555) 123-4567">
-                                    </div>
-                                    <div>
-                                        <label for="organization" class="block text-sm font-medium text-gray-700">Organization (Optional)</label>
-                                        <input type="text" name="organization" id="organization" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Company name">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Visit Details -->
-                            <div class="bg-gray-50 p-4 rounded-xl">
-                                <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                                    <i class="fas fa-building text-blue-600 mr-2"></i>
-                                    Visit Details
-                                </h3>
-                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <div class="sm:col-span-2">
-                                        <label for="visit_reason" class="block text-sm font-medium text-gray-700">Reason for Visit *</label>
-                                        <textarea name="visit_reason" id="visit_reason" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Describe the purpose of the visit"></textarea>
-                                    </div>
-                                    <div>
-                                        <label for="visit_date" class="block text-sm font-medium text-gray-700">Visit Date *</label>
-                                        <input type="date" name="visit_date" id="visit_date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" min="{{ date('Y-m-d') }}">
-                                    </div>
-                                    <div>
-                                        <label for="visit_time" class="block text-sm font-medium text-gray-700">Visit Time *</label>
-                                        <input type="time" name="visit_time" id="visit_time" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    </div>
-                                    <div class="sm:col-span-2">
-                                        <label for="floor" class="block text-sm font-medium text-gray-700">Floor/Department *</label>
-                                        <select name="floor" id="floor" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                            <option value="">Select floor or department</option>
-                                            @foreach($floorOptions as $value => $label)
-                                                <option value="{{ $value }}">{{ $label }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Submit Button -->
-                            <div class="flex justify-end">
-                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-md font-medium">
-                                    Send Invitation
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div> --}}
                 <div id="invite-tab" class="tab-content">
                     <div class="max-w-7xl">
                         <div class="mb-6">
@@ -449,32 +664,35 @@
                                     <!-- Guest Information -->
                                     <div class="bg-gray-50 p-4 rounded-lg">
                                         <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                                            <i class="fas fa-user text-blue-600 mr-2"></i>
+                                            <i class="fas fa-user text-[#07AF8B] mr-2"></i>
                                             Guest Information
                                         </h3>
                                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                            <div>
-                                                <label for="guest_name" class="block text-sm font-medium text-gray-700">Full Name *</label>
+                                            <div class="mb-6">
+                                                <label for="guest_name" class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
                                                 <input type="text" name="guest_name" id="guest_name" required
-                                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                       class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
                                                        placeholder="Enter guest's full name">
                                             </div>
-                                            <div>
-                                                <label for="guest_email" class="block text-sm font-medium text-gray-700">Email Address *</label>
+
+                                            <div class="mb-6">
+                                                <label for="guest_email" class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
                                                 <input type="email" name="guest_email" id="guest_email" required
-                                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                       class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
                                                        placeholder="guest@example.com">
                                             </div>
-                                            <div>
-                                                <label for="guest_phone" class="block text-sm font-medium text-gray-700">Phone Number *</label>
+
+                                            <div class="mb-6">
+                                                <label for="guest_phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
                                                 <input type="tel" name="guest_phone" id="guest_phone" required
-                                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                       class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
                                                        placeholder="+1 (555) 123-4567">
                                             </div>
-                                            <div>
-                                                <label for="organization" class="block text-sm font-medium text-gray-700">Organization (Optional)</label>
+
+                                            <div class="mb-6">
+                                                <label for="organization" class="block text-sm font-medium text-gray-700 mb-2">Organization (Optional)</label>
                                                 <input type="text" name="organization" id="organization"
-                                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                       class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
                                                        placeholder="Company name">
                                             </div>
                                         </div>
@@ -483,38 +701,46 @@
                                     <!-- Visit Details -->
                                     <div class="bg-gray-50 p-4 rounded-lg">
                                         <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                                            <i class="fas fa-building text-blue-600 mr-2"></i>
+                                            <i class="fas fa-building text-[#07AF8B] mr-2"></i>
                                             Visit Details
                                         </h3>
                                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                            <div class="sm:col-span-2">
-                                                <label for="visit_reason" class="block text-sm font-medium text-gray-700">Reason for Visit *</label>
+                                            <div class="mb-6 sm:col-span-2">
+                                                <label for="visit_reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for Visit *</label>
                                                 <textarea name="visit_reason" id="visit_reason" rows="3" required
-                                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                          class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
                                                           placeholder="Describe the purpose of the visit"></textarea>
                                             </div>
-                                            <div>
-                                                <label for="visit_date" class="block text-sm font-medium text-gray-700">Visit Date *</label>
+
+                                            <div class="mb-6">
+                                                <label for="visit_date" class="block text-sm font-medium text-gray-700 mb-2">Visit Date *</label>
                                                 <input type="date" name="visit_date" id="visit_date" required
-                                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                       class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
                                                        min="{{ date('Y-m-d') }}">
                                             </div>
-                                            <div>
-                                                <label for="visit_time" class="block text-sm font-medium text-gray-700">Visit Time *</label>
+
+                                            <div class="mb-6">
+                                                <label for="visit_time" class="block text-sm font-medium text-gray-700 mb-2">Visit Time *</label>
                                                 <input type="time" name="visit_time" id="visit_time" required
-                                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                                       class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
                                             </div>
-                                            <div class="sm:col-span-2">
-                                                <label for="floor" class="block text-sm font-medium text-gray-700">Floor/Department *</label>
+
+                                            <div class="mb-6 sm:col-span-2">
+                                                <label for="floor" class="block text-sm font-medium text-gray-700 mb-2">Floor/Department *</label>
                                                 <select name="floor" id="floor" required
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                                    <option value="">Select floor or department</option>
-                                                    <option value="ground">Ground Floor - Reception</option>
-                                                    <option value="1st">1st Floor - HR & Admin</option>
-                                                    <option value="2nd">2nd Floor - Finance</option>
-                                                    <option value="3rd">3rd Floor - IT Department</option>
-                                                    <option value="4th">4th Floor - Management</option>
-                                                    <option value="5th">5th Floor - Conference Rooms</option>
+                                                        class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
+                                                    <option value="">Select floor</option>
+                                                    <option value="ground">Ground Floor</option>
+                                                    <option value="mezzanine">Mezzanine</option>
+                                                    <option value="1st">Floor 1</option>
+                                                    <option value="2nd">Floor 2</option>
+                                                    <option value="3rd">Floor 3</option>
+                                                    <option value="4th">Floor 4</option>
+                                                    <option value="5th">Floor 5</option>
+                                                    <option value="6th">Floor 6</option>
+                                                    <option value="7th">Floor 7</option>
+                                                    <option value="8th">Floor 8</option>
+                                                    <option value="9th">Floor 9</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -546,13 +772,13 @@
 
                                         <div class="space-y-2">
                                             <button type="button" id="add-guest"
-                                                    class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                                                    class="w-full px-4 py-3 rounded-xl text-base font-medium border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                                                 <i class="fas fa-plus mr-2"></i>
                                                 Add Another Guest
                                             </button>
 
                                             <button type="button" id="remove-guest"
-                                                    class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md text-red-600 hover:text-red-700 hover:bg-red-50 hidden">
+                                                    class="w-full px-4 py-3 rounded-xl text-base font-medium border border-gray-300 text-red-600 hover:text-red-700 hover:bg-red-50 hidden">
                                                 Remove Current Guest
                                             </button>
                                         </div>
@@ -562,24 +788,26 @@
                                     <div class="bg-white p-4 rounded-lg border border-gray-200">
                                         <h3 class="text-lg font-medium text-gray-900 mb-4">CSV Import/Export</h3>
                                         <div class="space-y-2">
+                                            <div class="relative">
+                                                <input type="file" accept=".csv" id="csv-import" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                                                <button type="button"
+                                                class="w-full px-4 py-3 rounded-xl text-white text-base font-medium transition-all duration-200 bg-[#07AF8B] hover:bg-[#007570] active:translate-y-0 hover:-translate-y-px cursor-pointer">
+                                                    <i class="fas fa-upload mr-2"></i>
+                                                    Import Guests from CSV
+                                                </button>
+                                            </div>
                                             <button type="button" id="download-template"
-                                                    class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
+                                            class="w-full px-4 py-3 rounded-xl text-base font-medium border border-gray-300 hover:bg-gray-50 transition-all duration-200 active:translate-y-0 hover:-translate-y-px cursor-pointer">
                                                 <i class="fas fa-download mr-2"></i>
                                                 Download CSV Template
                                             </button>
 
-                                            <div class="relative">
-                                                <input type="file" accept=".csv" id="csv-import" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                                                <button type="button" class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
-                                                    <i class="fas fa-upload mr-2"></i>
-                                                    Import from CSV
-                                                </button>
-                                            </div>
+
                                         </div>
                                     </div>
 
                                     <!-- Current Guest Summary -->
-                                    <div class="bg-blue-50 p-4 rounded-lg border border-green-200">
+                                    <div class="hidden bg-blue-50 p-4 rounded-lg border border-green-200">
                                         <h4 class="text-sm font-medium text-green-900 mb-2">Current Guest Summary</h4>
                                         <div class="text-sm text-green-700 space-y-1" id="guest-summary">
                                             <p><strong>Name:</strong> <span id="summary-name">Not specified</span></p>
@@ -593,9 +821,11 @@
 
                             <!-- Submit Button -->
                             <div class="flex justify-end mt-8">
-                                <button type="submit" id="submit-btn" class="bg-[#22807e] hover:bg-[#00aa8c] text-white px-8 py-2 rounded-md font-medium">
-                                    Send All Invitations (<span id="submit-count">1</span>)
-                                </button>
+                                <button type="submit" id="submit-btn"
+    class="px-4 py-3 rounded-xl text-white text-base font-medium flex items-center justify-center transition-all duration-200 bg-[#07AF8B] hover:bg-[#007570] active:translate-y-0 hover:-translate-y-px cursor-pointer">
+    Send All Invitations (<span id="submit-count">1</span>)
+</button>
+
                             </div>
                         </form>
                     </div>
@@ -864,25 +1094,25 @@
                                     Previous
                                 </button>
                             @else
-                                <a href="{{ $visitHistory->previousPageUrl() }}" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
+                                <a href="{{ $visitHistory->previousPageUrl() }}#history" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
                                     Previous
                                 </a>
                             @endif
 
                             @foreach(range(1, $visitHistory->lastPage()) as $page)
                                 @if($page == $visitHistory->currentPage())
-                                    <button class="px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                    <button class="px-3 py-2 text-sm bg-[#07AF8B] hover:bg-[#007570] text-white rounded-md ">
                                         {{ $page }}
                                     </button>
                                 @else
-                                    <a href="{{ $visitHistory->url($page) }}" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
+                                    <a href="{{ $visitHistory->url($page) }}#history" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
                                         {{ $page }}
                                     </a>
                                 @endif
                             @endforeach
 
                             @if($visitHistory->hasMorePages())
-                                <a href="{{ $visitHistory->nextPageUrl() }}" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
+                                <a href="{{ $visitHistory->nextPageUrl() }}#history" class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
                                     Next
                                 </a>
                             @else
@@ -984,10 +1214,10 @@
             // Update tab buttons
             document.querySelectorAll('.tab-button').forEach(button => {
                 if (button.getAttribute('data-tab') === tabName) {
-                    button.classList.add('border-blue-500', 'text-blue-600');
+                    button.classList.add('border-[#fecd01]', 'text-[#007570]');
                     button.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
                 } else {
-                    button.classList.remove('border-blue-500', 'text-blue-600');
+                    button.classList.remove('border-[#fecd01]', 'text-[#007570]');
                     button.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
                 }
             });
@@ -1375,8 +1605,11 @@
         // Download CSV template
         downloadTemplateBtn.addEventListener('click', () => {
             const csvContent = "Guest Name,Email,Phone,Organization,Visit Reason,Visit Date,Visit Time,Floor\n" +
-                              "John Doe,john@example.com,+1234567890,ABC Corp,Business Meeting,2024-01-15,14:00,3rd Floor - IT Department\n" +
-                              "Jane Smith,jane@example.com,+1987654321,XYZ Ltd,Project Review,2024-01-16,10:30,2nd Floor - Finance";
+                              "John Doe,john@example.com,+1234567890,ABC Corp,Business Meeting,2024-01-15,14:00,ground\n" +
+                              "Jane Smith,jane@example.com,+1987654321,XYZ Ltd,Project Review,2024-01-16,10:30,mezzanine\n" +
+                              "Chinedu Okafor,chinedu.okafor@example.com,+2348012345678,Zentech Ltd,Tech Demo,2024-01-17,11:15,1st\n" +
+                              "Amina Bello,amina.bello@example.com,+2348098765432,GreenEdge Consult,Client Onboarding,2024-01-18,09:45,2nd"
+
 
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
@@ -1454,3 +1687,5 @@
     </script>
 </body>
 </html>
+
+ --}}

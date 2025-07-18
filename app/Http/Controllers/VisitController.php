@@ -3,20 +3,83 @@
 namespace App\Http\Controllers;
 
 use App\Models\Visit;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VisitApprovedEmail;
+use Illuminate\Support\Facades\Log;
+
+use Endroid\QrCode\QrCode as EndroidQrCode;
+use Endroid\QrCode\Writer\PngWriter;
+
 
 
 class VisitController extends Controller
 {
-    public function approve(Visit $visit): RedirectResponse
+    public function approve(Visit $visit): JsonResponse
     {
-        $visit->update(['status' => 'approved']);
-        return redirect()->route('sm.dashboard')->with('success', 'Visit approved successfully');
+        // $visit->update(['status' => 'approved']);
+        // return redirect()->route('sm.dashboard')->with('success', 'Visit approved successfully');
+
+        try {
+
+            // Dispatch email sending as a background job (non-blocking)
+            // Using Laravel's queue system for better performance
+            // dispatch(function() use ($visit) {
+            //     Http::post(route('send.email'), [
+            //         'visit_id' => $visit->id,
+            //         'type' => 'approved',
+            //     ]);
+            // })->onQueue('emails');
+
+             // Generate QR code using Endroid QRCode (pure PHP)
+            $qrCode = new EndroidQrCode($visit->unique_code);
+            $qrCode->setSize(200);
+            $qrCode->setMargin(10);
+
+            $writer = new PngWriter();
+            $result = $writer->write($qrCode);
+
+            $qrCodeBase64 = base64_encode($result->getString());
+
+            // Send email
+            Mail::to($visit->visitor->email)->send(new VisitApprovedEmail($visit, $qrCodeBase64));
+
+
+            // Generate QR code
+            // $qrCodeSvg = QrCode::size(200)->generate($visit->unique_code);
+
+            // $imageData = Browsershot::html($qrCodeSvg)
+            // ->windowSize(320, 320)
+            // ->setScreenshotType('png')
+            // ->waitUntilNetworkIdle()
+            // ->screenshot();
+
+            // $qrCodeBase64 = base64_encode($imageData);
+
+            // // Send email
+            // Mail::to($visit->visitor->email)->send(new VisitApprovedEmail($visit, $qrCodeBase64));
+
+            // Update the visit status
+            $visit->update(['status' => 'approved']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Visit approved successfully!',
+                'visit_id' => $visit->id
+            ], 200);
+
+        } catch (\Exception $e) {
+            \Log::error('Error approving visit: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to approve visit. Please try again.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
 
         // try {
         //     // 1. Update visit status
@@ -66,7 +129,7 @@ class VisitController extends Controller
 
 public function deny(Visit $visit): RedirectResponse
 {
-    $visit->update(['status' => 'denied']);
+    $visit->update(['status' => 'rejected']);
     return redirect()->route('sm.dashboard')->with('success', 'Visit denied successfully');
 }
 

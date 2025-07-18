@@ -1,50 +1,37 @@
-{{-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <title>Visit Confirmed</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
+            background-color: #f5f5f5;
             color: #333;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
         }
         .container {
             max-width: 600px;
             margin: 20px auto;
-            background: white;
+            background: #fff;
             border-radius: 8px;
-            overflow: hidden;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
         .header {
             background-color: #07AF8B;
             color: white;
-            padding: 30px 20px;
             text-align: center;
+            padding: 20px;
         }
-        .header h2 {
-            margin: 0;
-            font-size: 24px;
+        .header-logo {
+            width: 100%;
+            max-height: 100px;
+            margin: 0 auto 10px;
         }
         .content {
             padding: 25px;
-        }
-        .footer {
-            background-color: #007570;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-            font-size: 12px;
-        }
-        .qr-code {
-            text-align: center;
-            margin: 25px 0;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            border-left: 4px solid #FFCA00;
         }
         .details-table {
             width: 100%;
@@ -60,98 +47,72 @@
             color: #007570;
             width: 30%;
         }
-        .highlight {
-            background-color: rgba(255, 202, 0, 0.1);
-            padding: 10px;
+        .qr-code {
+            text-align: center;
+            margin: 25px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
             border-radius: 5px;
-            margin: 15px 0;
-            border-left: 3px solid #FFCA00;
+            border-left: 4px solid #FFCA00;
         }
-        .button {
-            display: inline-block;
-            background-color: #FFCA00;
-            color: #333;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            margin: 15px 0;
+        .footer {
+            background-color: #007570;
+            color: white;
+            text-align: center;
+            font-size: 12px;
+            padding: 15px 20px;
         }
     </style>
 </head>
 <body>
-<div class='container'>
-    <div class='header'>
-        <h2>Appointment Approved</h2>
-    </div>
-    <div class='content'>
-        <p>Dear {{ $visitor_name }},</p>
-        <p>Your appointment request has been <strong>approved</strong>. Below are your appointment details:</p>
-        <table class='details-table'>
-            <tr>
-                <td><strong>Host:</strong></td>
-                <td>{{ $host_name }}</td>
-            </tr>
-            <tr>
-                <td><strong>Date:</strong></td>
-                <td>{{ $visit_date }}</td>
-            </tr>
-            <tr>
-                <td><strong>Time:</strong></td>
-                <td>{{ $visit_time }}</td>
-            </tr>
-            <tr>
-                <td><strong>Location:</strong></td>
-                <td>{{ $visit_location }}</td>
-            </tr>
-            <tr>
-                <td><strong>Purpose:</strong></td>
-                <td>{{ $visit_purpose }}</td>
-            </tr>
-            <tr>
-                <td><strong>Unique Code:</strong></td>
-                <td><strong>{{ $unique_code }}</strong></td>
-            </tr>
-        </table>
-        <div class='qr-code'>
-            <p><strong>Show this QR code at the reception on arrival:</strong></p>
-            <img src="{{ $qr_code_image }}" alt='QR Code' style='width: 200px; height: 200px;'>
+    <div class="container">
+        <div class="header">
+            <img src="cid:logo_image" alt="Logo" class="header-logo">
+            <h2>Your Visit has been Confirmed!</h2>
         </div>
-        <p>Please arrive on time. If you are unable to attend, kindly notify your host in advance.</p>
+
+        <div class="content">
+            <p>Dear {{ $visit->visitor_name ?? 'Visitor' }},</p>
+            <p>Your visit has been confirmed. Here are the visit details:</p>
+
+            <table class="details-table">
+                <tr>
+                    <td>Visitor Name:</td>
+                    <td>{{ $visit->visitor->name ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <td>Visit Date:</td>
+                    <td>{{ \Carbon\Carbon::parse($visit->visit_date)->format('d-m-Y') ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <td>Time:</td>
+                    <td>{{ \Carbon\Carbon::parse($visit->visit_date)->format('H:i') ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <td>Purpose:</td>
+                    <td>{{ $visit->reason ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <td>Host:</td>
+                    <td>{{ $visit->staff->name ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <td>Unique Code:</td>
+                    <td><strong>{{ $visit->unique_code ?? 'N/A' }}</strong></td>
+                </tr>
+            </table>
+
+            <div class="qr-code">
+                <p><strong>Show this QR code at the gate:</strong></p>
+                <img src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="QR Code" style="width:200px;height:200px;">
+            </div>
+
+            <p>Please arrive on time. If you cannot attend, kindly inform your host in advance.</p>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated message. Please do not reply.</p>
+        </div>
     </div>
-    <div class='footer'>
-        <p>This is an automated message. Please do not reply.</p>
-    </div>
-</div>
-</body>
-</html> --}}
-
-<!-- resources/views/emails/visit-approved.blade.php -->
-
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Visit Approved</title>
-</head>
-<body>
-    <h1>Your Visit has been Approved!</h1>
-
-    <p>Dear Visitor,</p>
-
-    <p>Your visit with the following details has been approved:</p>
-
-    <ul>
-        <li>Visitor Name: {{ $visit->visitor_name ?? 'N/A' }}</li>
-        <li>Visit Date: {{ $visit->visit_date ?? 'N/A' }}</li>
-        <li>Unique Code: {{ $visit->unique_code ?? 'N/A' }}</li>
-    </ul>
-
-    <p>
-        <img src="{{ asset('qrcodes/' . $visit->unique_code . '.png') }}" alt="QR Code">
-    </p>
-
-    <p>Thank you!</p>
 </body>
 </html>
-
