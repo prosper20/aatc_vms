@@ -31,7 +31,8 @@ class LoginController extends Controller
 
             return $staff->profile_completed == 0
                 ? redirect()->route('profile.edit')
-                : redirect('/home');
+                : redirect('/staff/dashboard');
+                // : redirect('/home');
         }
 
         return redirect()->route('login', ['error' => 1]);

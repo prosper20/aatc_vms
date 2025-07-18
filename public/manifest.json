@@ -2,7 +2,7 @@
     "name": "AATC - VMS",
     "short_name": "VMS",
     "start_url": "/index.php",
-    "background_color": "#fecd01",
+    "background_color": "#007570",
     "description": "Abuja-AATC Visitor Management Portal",
     "display": "fullscreen",
     "theme_color": "#007570",

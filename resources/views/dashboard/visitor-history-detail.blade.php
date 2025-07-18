@@ -9,15 +9,13 @@
     <aside id="sidebar" class="w-64 bg-white shadow-xl fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:inset-0">
         <div class="flex flex-col h-full">
             <!-- Logo Section -->
-            <div class="flex items-center justify-center p-6 border-b border-gray-100">
-                <div class="flex items-center space-y-3 flex-col">
-                    <div class=" bg-gradient-to-br from-[#07AF8B] to-[#007570] rounded-xl flex items-center justify-center">
-                        <img src="{{ asset('assets/logo-green-yellow.png') }}" alt={{__("Logo")}} class="h-10 md:h-12">
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold text-[#007570]">Abuja AATC-VMS</h1>
-                        <p class="text-xs text-gray-500">Security Portal</p>
-                    </div>
+            <div class="flex flex-col justify-center space-x-3 px-4 py-3">
+                <div class="p-2">
+                    <img src="{{ asset('assets/logo-green-yellow.png') }}" alt="{{ __('Logo') }}" class="h-10 md:h-12">
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-[#007570]">Abuja AATC-VMS</h1>
+                    <p class="text-xs text-gray-500">Security Portal</p>
                 </div>
             </div>
 
@@ -33,9 +31,14 @@
                     <span class="font-medium">Visitor History</span>
                 </a>
 
-                <a href="{{ route('sm.dashboard') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-[#07AF8B]/10 hover:text-[#07AF8B] transition-colors duration-200 group">
+                <a href="{{ route('sm.pending-visits') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-[#07AF8B]/10 hover:text-[#07AF8B] transition-colors duration-200 group">
                     <i class="fas fa-clock w-5 h-5 mr-3 text-gray-400 group-hover:text-[#07AF8B]"></i>
                     <span class="font-medium">Pending Visits</span>
+                    @if(isset($pendingVisits) && $pendingVisits->count() > 0)
+                        <span class="ml-auto bg-[#FFCA00] text-black text-xs font-semibold px-2 py-1 rounded-full">
+                            {{ $pendingVisits->count() }}
+                        </span>
+                    @endif
                 </a>
 
                 <a href="{{ route('sm.analytics') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-[#07AF8B]/10 hover:text-[#07AF8B] transition-colors duration-200 group">
@@ -47,9 +50,6 @@
             <!-- User Profile & Logout -->
             <div class="border-t border-gray-100 p-4">
                 <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 bg-gradient-to-br from-[#07AF8B] to-[#007570] rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-white text-sm"></i>
-                    </div>
                     <div class="ml-3">
                         <p class="text-sm font-medium text-gray-900">{{ Auth::guard('sm')->user()->name ?? 'Security Manager' }}</p>
                         <p class="text-xs text-gray-500">{{ Auth::guard('sm')->user()->email ?? 'manager@example.com' }}</p>
@@ -87,7 +87,7 @@
 
                 <!-- Right Section -->
                 <div class="flex items-center space-x-4">
-                    <a href="{{ route('sm.visitor-history') }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200">
+                    <a href="{{ route('sm.visitor-history') }}" class="inline-flex items-center px-4 py-2 text-sm font-medium bg-[#FFCA00] hover:bg-[#e0b200] rounded-lg transition-colors duration-200">
                         <i class="fas fa-arrow-left mr-2"></i>
                         Back to History
                     </a>

@@ -26,70 +26,69 @@
     </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased">
+    <!-- Header -->
+    <div class="p-4 md:p-6 flex flex-row justify-between items-start md:items-center mb-6 gap-4 sticky top-0 z-30 bg-white">
+        <!-- Back Arrow + Title -->
+        <div class="flex items-center space-x-3">
+            <a href="/sm/dashboard" class="text-gray-600 hover:text-gray-800 text-lg md:text-xl">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+                    <span class="block md:hidden">Analytics</span>
+                    <span class="hidden md:block">Visitor Analytics</span>
+                  </h1>
+
+                <p class="text-gray-500 text-sm">{{ now()->format('l, F j, Y') }}</p>
+            </div>
+        </div>
+
+        <!-- Export Button -->
+        <div class="mt-2 md:mt-0">
+            {{-- <button class="bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all">
+                <i class="fas fa-download mr-2"></i>Export Report
+            </button> --}}
+            <a href="/sm/analytics/export" class="border border-gray-200 px-4 py-2 rounded-lg text-sm font-medium bg-[#FFCA00] hover:bg-[#e0b200] transition-all">
+                <i class="fas fa-download mr-2"></i>Export Report
+            </a>
+        </div>
+    </div>
     <div class="min-h-screen p-4 md:p-6">
         <div class="max-w-7xl mx-auto">
-            <!-- Header -->
-            <div class="flex flex-row justify-between items-start md:items-center mb-6 gap-4">
-                <!-- Back Arrow + Title -->
-                <div class="flex items-center space-x-3">
-                    <a href="/sm/dashboard" class="text-gray-600 hover:text-gray-800 text-lg md:text-xl">
-                        <i class="fas fa-arrow-left"></i>
-                    </a>
-                    <div>
-                        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
-                            <span class="block md:hidden">Analytics</span>
-                            <span class="hidden md:block">Visitor Analytics</span>
-                          </h1>
-
-                        <p class="text-gray-500 text-sm">{{ now()->format('l, F j, Y') }}</p>
-                    </div>
-                </div>
-
-                <!-- Export Button -->
-                <div class="mt-2 md:mt-0">
-                    {{-- <button class="bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all">
-                        <i class="fas fa-download mr-2"></i>Export Report
-                    </button> --}}
-                    <a href="/sm/analytics/export" class="bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all">
-                        <i class="fas fa-download mr-2"></i>Export Report
-                    </a>
-                </div>
-            </div>
-
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="stat-card bg-white p-5 rounded-xl shadow-sm border border-gray-100 transition-all">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-lg bg-blue-50 text-blue-600 mr-4">
+                        <div class="p-3 rounded-lg bg-green-50 text-green-600 mr-4">
                             <i class="fas fa-calendar-day text-lg"></i>
                         </div>
                         <div>
-                            <p class="text-gray-500 text-sm font-medium">Visits Today</p>
-                            <p class="text-2xl font-bold text-gray-800">{{ $visitsToday }}</p>
+                            <p class="text-gray-600 text-sm font-semibold">Visits Today</p>
+                            <p class="text-2xl font-bold text-[#0b7570]">{{ $visitsToday }}</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="stat-card bg-white p-5 rounded-xl shadow-sm border border-gray-100 transition-all">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-lg bg-purple-50 text-purple-600 mr-4">
+                        <div class="p-3 rounded-lg bg-yellow-50 text-yellow-400 mr-4">
                             <i class="fas fa-redo text-lg"></i>
                         </div>
                         <div>
-                            <p class="text-gray-500 text-sm font-medium">Visits This Week</p>
-                            <p class="text-2xl font-bold text-gray-800">{{ $visitsThisWeek }}</p>
+                            <p class="text-gray-600 text-sm font-semibold">Visits This Week</p>
+                            <p class="text-2xl font-bold text-[#0b7570]">{{ $visitsThisWeek }}</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="stat-card bg-white p-5 rounded-xl shadow-sm border border-gray-100 transition-all">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-lg bg-purple-50 text-purple-600 mr-4">
+                        <div class="p-3 rounded-lg bg-yellow-50 text-yellow-400 mr-4">
                             <i class="fas fa-redo text-lg"></i>
                         </div>
                         <div>
-                            <p class="text-gray-500 text-sm font-medium">Visits This Month</p>
-                            <p class="text-2xl font-bold text-gray-800">{{ $visitsThisMonth }}</p>
+                            <p class="text-gray-600 text-sm font-semibold">Visits This Month</p>
+                            <p class="text-2xl font-bold text-[#0b7570]">{{ $visitsThisMonth }}</p>
                         </div>
                     </div>
                 </div>
@@ -266,15 +265,15 @@
                     <h2 class="font-semibold text-gray-800 mb-4">Arrival Methods</h2>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                                <i class="fas fa-car text-blue-600 text-xl"></i>
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-car text-[#0b7570] text-xl"></i>
                             </div>
                             <div class="text-lg font-bold text-gray-800">{{ $arrivalModeStats['vehicle'] }}</div>
                             <div class="text-xs text-gray-500">Vehicle ({{ $arrivalModeStats['vehicle_percentage'] }}%)</div>
                         </div>
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                                <i class="fas fa-walking text-green-600 text-xl"></i>
+                            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-walking text-yellow-500 text-xl"></i>
                             </div>
                             <div class="text-lg font-bold text-gray-800">{{ $arrivalModeStats['foot'] }}</div>
                             <div class="text-xs text-gray-500">Walk-in ({{ $arrivalModeStats['foot_percentage'] }}%)</div>
@@ -285,7 +284,7 @@
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                <i class="fas fa-car-side text-blue-500 mr-3"></i>
+                                <i class="fas fa-car-side text-purple-500 mr-3"></i>
                                 <span class="text-sm text-gray-600">Drop-off</span>
                             </div>
                             <div class="flex items-center">
@@ -295,7 +294,7 @@
                         </div>
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                <i class="fas fa-parking text-green-500 mr-3"></i>
+                                <i class="fas fa-parking text-orange-500 mr-3"></i>
                                 <span class="text-sm text-gray-600">Waiting</span>
                             </div>
                             <div class="flex items-center">
@@ -315,10 +314,10 @@
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="font-semibold text-gray-800">Visit Duration</h2>
-                        <i class="fas fa-clock text-indigo-500"></i>
+                        <i class="fas fa-clock text-[#16af8b]"></i>
                     </div>
                     <div class="text-center mb-4">
-                        <div class="text-3xl font-bold text-indigo-600">{{ $visitDurationStats['average_duration_formatted'] }}</div>
+                        <div class="text-3xl font-bold text-[#16af8b]">{{ $visitDurationStats['average_duration_formatted'] }}</div>
                         <div class="text-sm text-gray-500">Average Duration</div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 text-center">
@@ -463,11 +462,11 @@
                 datasets: [{
                     label: 'Visits',
                     data: {!! json_encode($dailyVisitTrend->pluck('total')) !!},
-                    backgroundColor: 'rgba(59, 130, 246, 0.05)',
-                    borderColor: '#3B82F6',
+                    backgroundColor: 'rgba(255, 202, 0, 0.1)',
+                    borderColor: '#FFCA00',
                     borderWidth: 2,
                     tension: 0.3,
-                    pointBackgroundColor: '#3B82F6',
+                    pointBackgroundColor: '#e0b200',
                     pointRadius: 4,
                     pointHoverRadius: 6,
                     fill: true
@@ -521,7 +520,7 @@
                 datasets: [{
                     label: 'Visits',
                     data: {!! json_encode($weeklyVisitTrend->pluck('total')) !!},
-                    backgroundColor: '#3B82F6',
+                    backgroundColor: '#16AF8B',
                     borderRadius: 6,
                     borderSkipped: false
                 }]

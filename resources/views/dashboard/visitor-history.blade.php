@@ -9,15 +9,13 @@
     <aside id="sidebar" class="w-64 bg-white shadow-xl fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:inset-0">
         <div class="flex flex-col h-full">
             <!-- Logo Section -->
-            <div class="flex items-center justify-center p-6 border-b border-gray-100">
-                <div class="flex items-center space-y-3 flex-col">
-                    <div class=" bg-gradient-to-br from-[#07AF8B] to-[#007570] rounded-xl flex items-center justify-center">
-                        <img src="{{ asset('assets/logo-green-yellow.png') }}" alt={{__("Logo")}} class="h-10 md:h-12">
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold text-[#007570]">Abuja AATC-VMS</h1>
-                        <p class="text-xs text-gray-500">Security Portal</p>
-                    </div>
+            <div class="flex flex-col justify-center space-x-3 px-4 py-3">
+                <div class="p-2">
+                    <img src="{{ asset('assets/logo-green-yellow.png') }}" alt="{{ __('Logo') }}" class="h-10 md:h-12">
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-[#007570]">Abuja AATC-VMS</h1>
+                    <p class="text-xs text-gray-500">Security Portal</p>
                 </div>
             </div>
 
@@ -36,6 +34,11 @@
                 <a href="{{ route('sm.pending-visits') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-[#07AF8B]/10 hover:text-[#07AF8B] transition-colors duration-200 group">
                     <i class="fas fa-clock w-5 h-5 mr-3 text-gray-400 group-hover:text-[#07AF8B]"></i>
                     <span class="font-medium">Pending Visits</span>
+                    @if(isset($pendingVisits) && $pendingVisits->count() > 0)
+                        <span class="ml-auto bg-[#FFCA00] text-black text-xs font-semibold px-2 py-1 rounded-full">
+                            {{ $pendingVisits->count() }}
+                        </span>
+                    @endif
                 </a>
 
                 <a href="{{ route('sm.analytics') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-[#07AF8B]/10 hover:text-[#07AF8B] transition-colors duration-200 group">
@@ -47,9 +50,6 @@
             <!-- User Profile & Logout -->
             <div class="border-t border-gray-100 p-4">
                 <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 bg-gradient-to-br from-[#07AF8B] to-[#007570] rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-white text-sm"></i>
-                    </div>
                     <div class="ml-3">
                         <p class="text-sm font-medium text-gray-900">{{ Auth::guard('sm')->user()->name ?? 'Security Manager' }}</p>
                         <p class="text-xs text-gray-500">{{ Auth::guard('sm')->user()->email ?? 'manager@example.com' }}</p>
@@ -58,7 +58,7 @@
 
                 <form method="POST" action="{{ route('sm.logout') }}" class="w-full">
                     @csrf
-                    <button type="submit" class="w-full flex items-center px-4 py-3 text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200 group">
+                    <button type="submit" class="w-full flex items-center ml-3 py-3 text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200 group">
                         <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i>
                         <span class="font-medium">Logout</span>
                     </button>
@@ -81,13 +81,13 @@
                     </button>
                     <div class="hidden md:block">
                         <h2 class="text-xl font-semibold text-gray-900">Visitor History</h2>
-                        <p class="text-sm text-gray-500">Complete visitor records and analytics</p>
+                        <p class="text-sm text-gray-500">Complete visitor records and details</p>
                     </div>
                 </div>
 
                 <!-- Right Section -->
                 <div class="flex items-center space-x-4">
-                    <button onclick="exportData()" class="inline-flex items-center px-4 py-2 text-sm font-medium text-[#07AF8B] bg-[#07AF8B]/10 hover:bg-[#07AF8B]/20 rounded-lg transition-colors duration-200">
+                    <button onclick="exportData()" class="inline-flex items-center px-4 py-2 text-sm font-medium bg-[#FFCA00] hover:bg-[#e0b200] rounded-lg transition-colors duration-200">
                         <i class="fas fa-download mr-2"></i>
                         Export Data
                     </button>
@@ -97,60 +97,6 @@
 
         <!-- Main Content -->
         <main class="p-4 lg:p-6 space-y-6 w-full">
-            <!-- Stats Cards -->
-            {{-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                <!-- Total Visits -->
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-all duration-200 hover:-translate-y-1">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">Total Visits</p>
-                            <p class="text-3xl font-bold text-[#007570] mt-2">{{ $stats['total_visits'] }}</p>
-                        </div>
-                        <div class="w-12 h-12 bg-[#07AF8B]/10 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-users text-[#07AF8B] text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Approved Visits -->
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-all duration-200 hover:-translate-y-1">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">Approved</p>
-                            <p class="text-3xl font-bold text-green-600 mt-2">{{ $stats['approved_visits'] }}</p>
-                        </div>
-                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Denied Visits -->
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-all duration-200 hover:-translate-y-1">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">Denied</p>
-                            <p class="text-3xl font-bold text-red-600 mt-2">{{ $stats['denied_visits'] }}</p>
-                        </div>
-                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-times-circle text-red-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Completed Visits -->
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-all duration-200 hover:-translate-y-1">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">Completed</p>
-                            <p class="text-3xl font-bold text-blue-600 mt-2">{{ $stats['completed_visits'] }}</p>
-                        </div>
-                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-flag-checkered text-blue-600 text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
 
             <!-- Filters Section -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -207,7 +153,7 @@
                     </div>
 
                     <div class="flex items-center space-x-3">
-                        <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[#07AF8B] hover:bg-[#007570] rounded-lg transition-colors duration-200">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 text-sm font-medium bg-[#FFCA00] hover:bg-[#e0b200] rounded-lg transition-colors duration-200">
                             <i class="fas fa-search mr-2"></i>
                             Apply Filters
                         </button>
@@ -243,12 +189,7 @@
                                 <tr class="hover:bg-gray-50 transition-colors duration-150">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <div class="w-10 h-10 bg-gradient-to-br from-[#07AF8B] to-[#007570] rounded-full flex items-center justify-center">
-                                                <span class="text-white text-sm font-semibold">
-                                                    {{ substr($visit->visitor->name ?? 'N/A', 0, 1) }}
-                                                </span>
-                                            </div>
-                                            <div class="ml-4">
+                                            <div>
                                                 <div class="text-sm font-medium text-gray-900">{{ $visit->visitor->name ?? 'N/A' }}</div>
                                                 <div class="text-sm text-gray-500">{{ $visit->visitor->email ?? 'N/A' }}</div>
                                                 <div class="text-xs text-gray-400">{{ $visit->visitor->organization ?? 'N/A' }}</div>
@@ -292,9 +233,11 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="{{ route('sm.visitor-history.show', $visit->id) }}"
-                                           class="text-[#07AF8B] hover:text-[#007570] transition-colors duration-200">
+                                           class="text-[#e0b200] hover:text-[#b89400] transition-colors duration-200">
+                                           <span class="inline-flex items-center px-2.5 py-2 rounded-[5px] text-xs font-medium bg-yellow-100 text-yellow-800 hover:text-yellow-900">
                                             <i class="fas fa-eye mr-1"></i>
                                             View Details
+                                        </span>
                                         </a>
                                     </td>
                                 </tr>

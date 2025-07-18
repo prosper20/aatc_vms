@@ -100,6 +100,9 @@ class ScannerController extends Controller
             'mode_of_arrival' => $request->mode_of_arrival,
             'plate_number' => $request->mode_of_arrival === 'vehicle' ? $request->plate_number : null,
             'vehicle_type' => $request->mode_of_arrival === 'vehicle' ? $request->vehicle_type : null,
+            'checked_in_at' => now(),
+            'checkin_by' => $request->verified_by,
+            'is_checked_in' => true,
         ]);
 
         $operative = Operative::find($request->verified_by);

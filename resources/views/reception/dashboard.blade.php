@@ -66,19 +66,19 @@
     </script>
 </head> --}}
 
-<body class="bg-gray-50">
+<body class="bg-gray-50 fixed w-full">
     <!-- Header -->
-    <header class="!bg-gradient-to-br !from-[#22807e] !to-[#00aa8c] text-white shadow-lg sticky top-0 z-50">
+    <header class="bg-white text-gray-900 shadow-lg sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-3 lg:py-6 md:py-4">
                 <!-- Logo/Branding Section -->
                 <div class="flex items-center space-x-3 md:space-x-4">
                     <div class="flex-shrink-0">
-                        <img src="{{ asset('assets/logo-no-bg.png') }}" alt="Logo" class="h-10 w-auto md:h-12">
+                        <img src="{{ asset('assets/logo-green-yellow.png') }}" alt="Logo" class="h-10 w-auto md:h-12">
                     </div>
                     <div class="hidden sm:block">
-                        <h1 class="text-lg md:text-2xl font-semibold leading-tight">Abuja AATC-VMS</h1>
-                        <p class="text-xs md:text-[14px] opacity-90">Reception Dashboard</p>
+                        <h1 class="text-lg md:text-2xl font-semibold leading-tight">Visitor Management Center</h1>
+                        <p class="text-xs md:text-[14px] opacity-90">VMC Portal</p>
                     </div>
                 </div>
 
@@ -116,12 +116,12 @@
             </div>
             <button class="bg-primary hover:bg-teal-700 text-white px-4 sm:px-6 py-3 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center justify-center text-base">
                 <i class="fas fa-user-plus mr-2 text-base"></i>
-                <span>Register Walk-In</span>
+                <span>Register Visitor</span>
             </button>
         </div>
 
         <!-- Statistics Cards - 2 columns on mobile -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
+        {{-- <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
             <!-- Expected Today -->
 
             <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-all duration-200 hover:-translate-y-1">
@@ -131,7 +131,7 @@
                         <p class="text-3xl font-bold text-[#FFCA00] mt-2" id="expected-today">{{ $expectedTodayCount }}</p>
                     </div>
                     <div class="w-12 h-12 bg-[#FFCA00]/10 rounded-xl flex items-center justify-center">
-                        {{-- <i class="fas fa-clock text-[#FFCA00] text-xl"></i> --}}
+
                         <i class="fas fa-calendar-day text-orange-600 text-xl"></i>
                     </div>
                 </div>
@@ -175,7 +175,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
 
         <!-- Visitor Management Card -->
@@ -185,7 +185,7 @@
                     <div class="flex items-center space-x-3">
                         <div>
                             <h3 class="text-2xl font-semibold text-gray-700">{{ __('Visitor Management') }}</h3>
-                            <p class="text-sm text-gray-500">Check-in • Card Issuance • Check-out • Card Retrieval</p>
+                            <p class="text-sm text-gray-500">Walk-in • Card Issuance • Card Retrieval • Check-out </p>
                         </div>
                     </div>
                 </div>
@@ -196,13 +196,13 @@
                 <div class="mb-6">
                     <div class="inline-flex h-10 items-center justify-center rounded-md bg-gray-100 p-2 text-gray-500 w-full">
                         <div class="grid grid-cols-3 w-full">
-                            <!-- Expected Today -->
+                            <!-- Approved -->
                             <button data-tab="expected-today" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm relative active" data-state="active">
-                                <span class="hidden sm:inline">Expected Today</span>
+                                <span class="hidden sm:inline">Approved</span>
                                 <span class="sm:hidden">Today</span>
-                                @if($expectedVisits->count() > 0)
-                                <span class="ml-2 inline-flex items-center rounded-full border border-transparent bg-red-500 px-1.5 py-0.5 text-xs font-medium text-white">
-                                    {{ $expectedVisits->count() }}
+                                @if($approvedPendingCheckin->count() > 0)
+                                <span class="ml-2 inline-flex items-center rounded-full border border-transparent bg-[#07ab8c] px-1.5 py-0.5 text-xs font-medium text-white">
+                                    {{ $approvedPendingCheckin->count() }}
                                 </span>
                                 @endif
                             </button>
@@ -226,35 +226,115 @@
 
                 <!-- Tab Contents -->
                 <div>
-                    <!-- Expected Today Tab Content -->
+                    <!-- Approved Tab Content -->
                     <div id="expected-today" class="tab-content expected-today">
                         <div class="rounded-md ">
                             <div class="relative w-full overflow-auto">
-                                <table class="w-full caption-bottom text-sm">
+                                <!-- Header table -->
+                                    <table class="w-full caption-bottom text-sm">
+                                        <thead class="[&_tr]:border-b bg-yellow-50">
+                                            <tr class="border-b transition-colors hover:bg-muted/50">
+                                                <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Visitor</th>
+                                                <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Contact</th>
+                                                <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Host</th>
+                                                <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Visit Date</th>
+                                                <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Floor</th>
+                                                <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Security Verification</th>
+                                                <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0 text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <!-- Scrollable body table -->
+                                    <div class="max-h-[60vh] overflow-y-auto w-full">
+                                        <table class="w-full caption-bottom text-sm">
+                                            <tbody class="[&_tr:last-child]:border-0">
+                                                @forelse($approvedPendingCheckin as $visit)
+                                                <tr class="border-b transition-colors hover:bg-orange-25">
+                                                    <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium">
+                                                        {{ $visit->visitor->name ?? 'N/A' }}
+                                                    </td>
+                                                    <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                        {{ $visit->visitor->phone ?? 'N/A' }}
+                                                    </td>
+                                                    <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                        {{ $visit->staff->name ?? 'N/A' }}
+                                                    </td>
+                                                    <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                        {{ \Carbon\Carbon::parse($visit->visit_date)->format('Y-m-d h:i A') }}
+                                                    </td>
+                                                    <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                        <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-gray-200">
+                                                            {{ $visit->floor_of_visit }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                        <div class="flex items-center gap-1">
+                                                            @if($visit->verification_passed)
+                                                            <span class="text-green-600">Successful</span>
+                                                            @elseif (is_null($visit->arrived_at_gate))
+                                                            <span class="text-yellow-600">Awaiting Arrival</span>
+                                                            @else
+                                                            <span class="text-red-600">Failed</span>
+                                                            @endif
+
+                                                            @if($visit->verification_message)
+                                                            <div class="group relative">
+                                                                <button class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                    </svg>
+                                                                </button>
+                                                                <div class="absolute z-10 left-0 mt-2 w-64 p-2 text-sm bg-white border border-gray-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                                                    {{ $visit->verification_message }}
+                                                                </div>
+                                                            </div>
+                                                            @endif
+                                                        </div>
+                                                    </td>
+                                                    <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right space-x-2">
+                                                        <button onclick="issueCard({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">
+                                                            <i class="fas fa-id-card mr-2"></i>Issue Pass
+                                                        </button>
+                                                        <button onclick="checkInVisitor({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-[#07ab8c]  hover:bg-primary text-white">
+                                                            Print Card
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                @empty
+                                                <tr>
+                                                    <td colspan="8" class="p-4 text-center text-muted-foreground">No visits expected today.</td>
+                                                </tr>
+                                                @endforelse
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                {{-- <table class="w-full caption-bottom text-sm">
                                     <thead class="[&_tr]:border-b bg-yellow-50">
                                         <tr class="border-b transition-colors hover:bg-muted/50">
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">#</th>
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Name</th>
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Visitor</th>
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Contact</th>
                                             <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Host</th>
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Scheduled Time</th>
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Floor Access</th>
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Visit Date</th>
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Floor</th>
                                             <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Security Verification</th>
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Status</th>
                                             <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0 text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody class="[&_tr:last-child]:border-0">
-                                        @forelse($expectedVisits as $visit)
+                                        @forelse($approvedPendingCheckin as $visit)
                                         <tr class="border-b transition-colors hover:bg-orange-25">
-                                            <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ $loop->iteration }}</td>
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium">
                                                 {{ $visit->visitor->name ?? 'N/A' }}
+                                            </td>
+                                            <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                {{ $visit->visitor->phone ?? 'N/A' }}
                                             </td>
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                                                 {{ $visit->staff->name ?? 'N/A' }}
                                             </td>
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                                                {{ \Carbon\Carbon::parse($visit->visit_date)->format('H:i A') }}
+                                                {{ \Carbon\Carbon::parse($visit->visit_date)->format('Y-m-d h:i A') }}
                                             </td>
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                                                 <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-gray-200">
@@ -285,37 +365,12 @@
                                                     @endif
                                                 </div>
                                             </td>
-                                            <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                                                @php
-                                                    $statusClasses = [
-                                                        'pending' => 'bg-yellow-100 text-yellow-800',
-                                                        'approved' => 'bg-green-100 text-green-800',
-                                                        'rejected' => 'bg-red-100 text-red-800',
-                                                    ];
-                                                @endphp
-
-                                                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {{ $statusClasses[$visit->status] ?? 'bg-gray-100 text-gray-800' }}">
-                                                    {{ ucfirst($visit->status) }}
-                                                </span>
-                                            </td>
-
-                                            {{-- <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                                                @if($visit->arrived_at_gate)
-                                                <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-                                                    Arrived at {{ \Carbon\Carbon::parse($visit->arrived_at_gate)->format('H:i A') }}
-                                                </span>
-                                                @else
-                                                <span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
-                                                    Awaiting Arrival
-                                                </span>
-                                                @endif
-                                            </td> --}}
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right space-x-2">
-                                                <button onclick="checkInVisitor({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-[#07ab8c]  hover:bg-primary text-white">
-                                                    Check In
-                                                </button>
                                                 <button onclick="issueCard({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">
-                                                    <i class="fas fa-id-card mr-2"></i>Issue Card
+                                                    <i class="fas fa-id-card mr-2"></i>Issue Pass
+                                                </button>
+                                                <button onclick="checkInVisitor({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-[#07ab8c]  hover:bg-primary text-white">
+                                                    Print Card
                                                 </button>
                                             </td>
                                         </tr>
@@ -325,7 +380,7 @@
                                         </tr>
                                         @endforelse
                                     </tbody>
-                                </table>
+                                </table> --}}
 
                             </div>
                         </div>
@@ -338,20 +393,21 @@
                                 <table class="w-full caption-bottom text-sm">
                                     <thead class="[&_tr]:border-b bg-green-50">
                                         <tr class="border-b transition-colors hover:bg-muted/50">
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">#</th>
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Name</th>
+                                            {{-- <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">#</th> --}}
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Visitor</th>
                                             <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Host</th>
                                             <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Checked In At</th>
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Check-In By</th>
+                                            {{-- <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Check-In By</th> --}}
                                             <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Card Number</th>
                                             <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Card Issued At</th>
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Card Issued By</th>
                                             <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0 text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody class="[&_tr:last-child]:border-0">
                                         @forelse($checkedInVisits as $visit)
                                         <tr class="border-b transition-colors hover:bg-muted/50">
-                                            <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ $loop->iteration }}</td>
+                                            {{-- <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ $loop->iteration }}</td> --}}
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium">
                                                 {{ $visit->visitor->name }}
                                             </td>
@@ -361,9 +417,9 @@
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                                                 {{ \Carbon\Carbon::parse($visit->checked_in_at)->format('H:i A') }}
                                             </td>
-                                            <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                            {{-- <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                                                 {{ $visit->checkin_by ?? '-' }}
-                                            </td>
+                                            </td> --}}
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                                                 <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-green-100 text-green-800">
                                                     {{ $visit->accessCard->serial_number ?? 'N/A' }}
@@ -372,9 +428,18 @@
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                                                 {{ $visit->card_issued_at ? \Carbon\Carbon::parse($visit->card_issued_at)->format('H:i A') : '-' }}
                                             </td>
+                                            <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                {{ $visit->checkin_by ?? '-' }}
+                                            </td>
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right">
+                                                <button onclick="issueCard({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">
+                                                    <i class="fas fa-id-card mr-2"></i>Issue Pass
+                                                </button>
                                                 <button onclick="checkOutVisitor({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 border-red-200 text-red-600 hover:bg-red-50">
                                                     Check Out
+                                                </button>
+                                                <button onclick="checkInVisitor({{ $visit->id }})" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-3 bg-[#07ab8c]  hover:bg-primary text-white">
+                                                    Print Card
                                                 </button>
                                             </td>
                                         </tr>
@@ -396,39 +461,57 @@
                                 <table class="w-full caption-bottom text-sm">
                                     <thead class="[&_tr]:border-b bg-blue-50">
                                         <tr class="border-b transition-colors hover:bg-muted/50">
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">#</th>
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Name</th>
+                                            {{-- <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">#</th> --}}
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Visitor</th>
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Contact</th>
                                             <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Host</th>
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Checked Out At</th>
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Check-Out By</th>
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Visit Date</th>
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Check-out Time</th>
+                                            {{-- <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Check-Out By</th> --}}
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Floor/Venue</th>
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Reason</th>
                                             <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Card Number</th>
-                                            <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Card Retrieved At</th>
+                                            {{-- <th class="h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0">Card Retrieved At</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody class="[&_tr:last-child]:border-0">
                                         @forelse($checkedOutVisits as $visit)
                                         <tr class="border-b transition-colors hover:bg-muted/50">
-                                            <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ $loop->iteration }}</td>
+                                            {{-- <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">{{ $loop->iteration }}</td> --}}
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium">
                                                 {{ $visit->visitor->name }}
+                                            </td>
+                                            <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                {{ $visit->visitor->phone ?? 'N/A' }}
                                             </td>
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                                                 {{ $visit->staff->name ?? 'N/A' }}
                                             </td>
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
-                                                {{ \Carbon\Carbon::parse($visit->checked_out_at)->format('H:i A') }}
+                                                {{ \Carbon\Carbon::parse($visit->visit_date)->format('Y-m-d') }}
                                             </td>
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                {{ \Carbon\Carbon::parse($visit->checked_out_at)->format('H:i A') }}
+                                            </td>
+                                            {{-- <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                                                 {{ $visit->checkout_by ?? '-' }}
+                                            </td> --}}
+                                            <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-gray-200">
+                                                    {{ $visit->floor_of_visit }}
+                                                </span>
+                                            </td>
+                                            <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                                {{ $visit->reason ?? '-' }}
                                             </td>
                                             <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                                                 <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-blue-100 text-blue-800">
                                                     {{ $visit->accessCard->serial_number ?? 'N/A' }}
                                                 </span>
                                             </td>
-                                            <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
+                                            {{-- <td class="p-4 align-middle [&:has([role=checkbox])]:pr-0">
                                                 {{ $visit->card_retrieved_at ? \Carbon\Carbon::parse($visit->card_retrieved_at)->format('H:i A') : '-' }}
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                         @empty
                                         <tr>

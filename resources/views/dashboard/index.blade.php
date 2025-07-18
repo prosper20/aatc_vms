@@ -2,6 +2,18 @@
 
 @section('content')
 <div class="flex min-h-screen bg-gray-50 w-full">
+
+    <!-- Toast -->
+    <div
+        x-data="{ open: false, message: '', type: 'success' }"
+        x-show="open"
+        x-transition
+        x-init="$watch('open', value => { if (value) setTimeout(() => open = false, 3000) })"
+        x-bind:class="type === 'success' ? 'bg-green-600' : 'bg-red-600'"
+        class="fixed top-4 right-4 text-white px-4 py-3 rounded shadow z-50"
+        x-text="message"
+    ></div>
+
     <!-- Mobile Overlay -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" onclick="closeSidebar()"></div>
 
@@ -9,22 +21,20 @@
     <aside id="sidebar" class="w-64 bg-white shadow-xl fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:inset-0">
         <div class="flex flex-col h-full">
             <!-- Logo Section -->
-            <div class="flex items-center justify-center p-6 border-b border-gray-100">
-                <div class="flex items-center space-y-3 flex-col">
-                    <div class=" bg-gradient-to-br from-[#07AF8B] to-[#007570] rounded-xl flex items-center justify-center">
-                        <img src="{{ asset('assets/logo-green-yellow.png') }}" alt={{__("Logo")}} class="h-10 md:h-12">
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold text-[#007570]">Abuja AATC-VMS</h1>
-                        <p class="text-xs text-gray-500">Security Portal</p>
-                    </div>
+            <div class="flex flex-col justify-center space-x-3 px-4 py-3">
+                <div class="p-2">
+                    <img src="{{ asset('assets/logo-green-yellow.png') }}" alt="{{ __('Logo') }}" class="h-10 md:h-12">
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-[#007570]">Abuja AATC-VMS</h1>
+                    <p class="text-xs text-gray-500">Security Portal</p>
                 </div>
             </div>
 
             <!-- Navigation Links -->
             <nav class="flex-1 px-4 py-6 space-y-2">
-                <a href="{{ route('sm.dashboard') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-[#07AF8B]/10 hover:text-[#07AF8B] transition-colors duration-200 group">
-                    <i class="fas fa-home w-5 h-5 mr-3 text-gray-400 group-hover:text-[#07AF8B]"></i>
+                <a href="{{ route('sm.dashboard') }}" class="flex items-center px-4 py-3 text-white rounded-lg bg-[#07AF8B] transition-colors duration-200 group">
+                    <i class="fas fa-home w-5 h-5 mr-3 text-white "></i>
                     <span class="font-medium">Dashboard</span>
                 </a>
 
@@ -52,9 +62,6 @@
             <!-- User Profile & Logout -->
             <div class="border-t border-gray-100 p-4">
                 <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 bg-gradient-to-br from-[#07AF8B] to-[#007570] rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-white text-sm"></i>
-                    </div>
                     <div class="ml-3">
                         <p class="text-sm font-medium text-gray-900">{{ Auth::guard('sm')->user()->name ?? 'Security Manager' }}</p>
                         <p class="text-xs text-gray-500">{{ Auth::guard('sm')->user()->email ?? 'manager@example.com' }}</p>
@@ -63,7 +70,7 @@
 
                 <form method="POST" action="{{ route('sm.logout') }}" class="w-full">
                     @csrf
-                    <button type="submit" class="w-full flex items-center px-4 py-3 text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200 group">
+                    <button type="submit" class="w-full flex items-center ml-3 py-3 text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200 group">
                         <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i>
                         <span class="font-medium">Logout</span>
                     </button>
@@ -117,13 +124,6 @@
                         </button>
                     </div>
 
-                    <!-- Quick Actions -->
-                    {{-- <div class="hidden lg:flex items-center space-x-2">
-                        <button onclick="refreshAll()" class="px-3 py-2 text-sm text-gray-600 hover:text-[#07AF8B] hover:bg-gray-50 rounded-lg transition-colors duration-200">
-                            <i class="fas fa-sync-alt mr-2"></i>
-                            Refresh
-                        </button>
-                    </div> --}}
                 </div>
             </div>
         </header>
@@ -131,7 +131,7 @@
         <!-- Dashboard Content -->
         <main class="p-4 lg:p-6 space-y-6 w-full">
             <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6" id="stats-container">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6" id="stats-container">
                 <!-- Visitors Today Card -->
                 <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-all duration-200 hover:-translate-y-1">
                     <div class="flex items-center justify-between">
@@ -185,40 +185,52 @@
                 </div>
             </div>
 
-            <!-- Pending Requests -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-                <div class="p-6 border-b border-gray-100">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-[#07AF8B]/10 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-user-check text-[#07AF8B]"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900">{{ __('Visitor Approvals') }}</h3>
-                                <p class="text-sm text-gray-500">Manage pending visitor requests</p>
+
+            <div id="visitor-container" >
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div class="p-2 sm:p-4 md:p-6 ">
+                        <div class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div class="w-full flex items-center space-x-3">
+                                <div class="flex w-full justify-between md:justify-start">
+                                    <h2 class="text-2xl font-semibold text-[#0b7570]">{{ __('Visitor Approvals') }}</h2>
+                                    @if($pendingVisits->count() > 0)
+                                        <span class="ml-2 inline-flex items-center rounded-[5px] border border-transparent bg-[#feca01] px-1.5 py-0.5 text-sm font-semibold">
+                                            {{ $pendingVisits->count() }} Pending
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#FFCA00]/10 text-[#FFCA00]" id="pending-badge">
-                                <div class="w-2 h-2 bg-[#FFCA00] rounded-full mr-2"></div>
-                                {{ $stats['pending_count'] ?? $pendingVisits->count() }} {{ __('Pending') }}
-                            </span>
-                            {{-- <button onclick="refreshAll()" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200">
-                                <i class="fas fa-sync-alt mr-2"></i>
-                                {{ __('Refresh') }}
-                            </button> --}}
-                            <div class="hidden lg:flex items-center space-x-2">
-                                <button onclick="refreshAll()" class="px-3 py-2 text-sm text-gray-600 hover:text-[#07AF8B] hover:bg-gray-50 rounded-lg transition-colors duration-200">
-                                    <i class="fas fa-sync-alt mr-2"></i>
-                                    Refresh
+                    </div>
+
+                    <div >
+                        <div class="p-0 sm:p-4 md:p-6 inline-flex h-10 items-center justify-center bg-gray-100 text-gray-500 w-full">
+                            <div class="grid grid-cols-3 w-full">
+                                <button class="inline-flex items-center justify-start whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-gray-900">
+                                    <span >Visitor</span>
+                                </button>
+
+                                <button class="inline-flex items-center justify-start md:justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-gray-900">
+                                    <span >Host</span>
+                                </button>
+
+                                <button class="inline-flex items-center justify-end whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-gray-900">
+                                    <span >Time of Arival</span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div id="visitor-container" class="p-6">
-                    @include('partials.visitor-list', ['visitors' => $pendingVisits ?? []])
+                    <div class="p-0 pb-4 sm:p-4 md:p-6 pt-0 sm:pt-0 md:pt-0">
+                        @include('partials.visitor-list', ['visitors' => $pendingVisits->take(5)])
+                    </div>
+
+                    <div class="px-2 sm:px-4 md:px-6 pb-4 text-right">
+                        <a href="/sm/pending-visits" class="inline-flex items-center px-4 py-2 text-sm font-medium bg-[#FFCA00] hover:bg-[#e0b200] rounded-lg transition-colors duration-200">
+                            View All
+                            <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </main>
@@ -288,35 +300,111 @@ function closeSidebar() {
     });
 </script>
 
-{{-- Enhanced AJAX functionality --}}
 <script>
-    function approveVisitor(id) {
-        const button = event.target;
-        const originalContent = button.innerHTML;
 
-        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Approving...';
-        button.disabled = true;
+    function approveVisit(visitId) {
+    // Find the specific visit element
+    const visitElement = document.getElementById(`visit-${visitId}`);
+    const alpineData = visitElement.__x ? visitElement.__x.$data : null;
 
-        fetch('/sm/visits/' + id + '/approve', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            if (response.ok) {
-                refreshAll();
-            } else {
-                button.innerHTML = originalContent;
-                button.disabled = false;
-            }
-        }).catch(error => {
-            button.innerHTML = originalContent;
-            button.disabled = false;
-            console.error('Error:', error);
-        });
+    if (!alpineData) {
+        console.error('Alpine.js data not found');
+        return;
     }
+
+    // Set loading state
+    alpineData.loading = true;
+
+    // Make the API call
+    fetch(`{{ url('sm/visits') }}/${visitId}/approve`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Show success toast
+        showToast('Visit approved successfully!', 'success');
+
+        // Smooth removal animation
+        visitElement.style.transition = 'all 0.5s ease-out';
+        visitElement.style.transform = 'translateX(100%)';
+        visitElement.style.opacity = '0';
+
+        // Remove element after animation
+        setTimeout(() => {
+            visitElement.remove();
+            // Update counters
+            updateCounters();
+        }, 500);
+    })
+    .catch(error => {
+        console.error('Error approving visit:', error);
+        showToast('Failed to approve visit. Please try again.', 'error');
+        // Reset loading state on error
+        alpineData.loading = false;
+    });
+}
+
+// Function to update counters after approval
+function updateCounters() {
+    const pendingCountElement = document.getElementById('pending-count');
+    const pendingBadgeElement = document.getElementById('pending-badge');
+
+    if (pendingCountElement) {
+        const currentCount = parseInt(pendingCountElement.textContent) || 0;
+        const newCount = Math.max(0, currentCount - 1);
+        pendingCountElement.textContent = newCount;
+
+        // Update badge
+        if (pendingBadgeElement) {
+            pendingBadgeElement.innerHTML = `
+                <div class="w-2 h-2 bg-[#FFCA00] rounded-full mr-2"></div>
+                ${newCount} Pending
+            `;
+        }
+    }
+}
+
+// Enhanced toast function that works with your existing toast system
+function showToast(message, type = 'success') {
+    // Try to use your existing Alpine.js toast system
+    const toastElement = document.querySelector('[x-data*="open"]');
+
+    if (toastElement && toastElement.__x) {
+        const toastData = toastElement.__x.$data;
+        toastData.message = message;
+        toastData.type = type;
+        toastData.open = true;
+    } else {
+        // Fallback to a simple notification
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 px-4 py-3 rounded shadow z-50 text-white transition-all duration-300 ${
+            type === 'success' ? 'bg-green-600' : 'bg-red-600'
+        }`;
+        toast.textContent = message;
+
+        document.body.appendChild(toast);
+
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
+    }
+}
 
     function denyVisitor(id) {
         const button = event.target;
@@ -372,169 +460,17 @@ function closeSidebar() {
 
     // Auto-refresh every 30 seconds
     setInterval(refreshAll, 30000);
+
+    function showToast(message, type = 'success') {
+            const toast = document.querySelector('[x-data*="open"]');
+            if (!toast) return;
+
+            const x = toast.__x.$data;
+            x.message = message;
+            x.type = type;
+            x.open = true;
+        }
+
 </script>
 
 @endsection
-
-{{-- @extends('layouts.app')
-
-@section('content')
-<div class="flex min-h-screen bg-gray-100 w-full">
-    <!-- Sidebar -->
-    <aside id="sidebar" class="w-64 bg-white shadow p-4 hidden md:block fixed md:relative z-30">
-        <nav class="space-y-4">
-            <h2 class="text-lg font-bold text-[#07AF8B]">Visitor Management</h2>
-            <a href="{{ route('sm.dashboard') }}" class="block text-gray-700 hover:text-[#07AF8B]">Dashboard</a>
-            <a href="{{ route('sm.dashboard') }}" class="block text-gray-700 hover:text-[#07AF8B]">Visitor History</a>
-            <a href="{{ route('sm.dashboard') }}" class="block text-gray-700 hover:text-[#07AF8B]">Pending Visits</a>
-            <a href="{{ route('sm.analytics') }}" class="block text-gray-700 hover:text-[#07AF8B]">Analytics</a>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button class="mt-4 text-red-600 hover:underline">Logout →</button>
-            </form>
-        </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="flex-1 w-full">
-        <!-- Top Nav -->
-        <div class="bg-white md:bg-gray-100 px-4 py-8 flex justify-between items-center shadow md:sticky top-0 z-20">
-            <!-- Hamburger -->
-            <button class="md:hidden text-[#07AF8B]" onclick="toggleSidebar()">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
-
-            <!-- Search -->
-            <form method="GET" action="{{ route('sm.dashboard') }}" class="flex-grow mx-4 max-w-2xl">
-                <input type="text" name="search"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none"
-                       placeholder="Search visitors..." value="{{ request('search') }}">
-            </form>
-
-            <!-- Notifications -->
-            <div class="relative">
-                <span class="material-icons text-[#6c757d]">notifications</span>
-            </div>
-        </div>
-
-        <!-- Dashboard Content -->
-        <div class="p-6 space-y-6 w-full">
-            <!-- Top Section -->
-            <div class="flex flex-col lg:flex-row gap-6">
-                <!-- Summary Boxes -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 w-full" id="stats-container">
-                    <!-- Visitors Today Card -->
-                    <div class="bg-white rounded-lg shadow-sm p-4 text-center transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
-                        <div class="text-[#07AF8B] text-2xl mb-2">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="text-3xl font-bold text-[#007570]" id="total-today">{{ $visitorsToday }}</div>
-                        <div class="text-sm text-gray-600">{{ __('Visitors Today') }}</div>
-                    </div>
-
-                    <!-- Pending Approvals Card -->
-                    <div class="bg-white rounded-lg shadow-sm p-4 text-center transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
-                        <div class="text-[#07AF8B] text-2xl mb-2">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="text-3xl font-bold text-[#007570]" id="pending-count">{{$pendingVisits->count() }}</div>
-                        <div class="text-sm text-gray-600">{{ __('Pending Approvals') }}</div>
-                    </div>
-
-                    <!-- Approved Today Card -->
-                    <div class="bg-white rounded-lg shadow-sm p-4 text-center transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
-                        <div class="text-[#07AF8B] text-2xl mb-2">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="text-3xl font-bold text-[#007570]" id="approved-today">{{ $approvedToday }}</div>
-                        <div class="text-sm text-gray-600">{{ __('Approved Today') }}</div>
-                    </div>
-
-                    <!-- Denied Today Card -->
-                    <div class="bg-white rounded-lg shadow-sm p-4 text-center transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
-                        <div class="text-[#07AF8B] text-2xl mb-2">
-                            <i class="fas fa-times-circle"></i>
-                        </div>
-                        <div class="text-3xl font-bold text-[#007570]" id="denied-today">{{ $deniedToday }}</div>
-                        <div class="text-sm text-gray-600">{{ __('Denied Today') }}</div>
-                    </div>
-                </div>
-
-
-            </div>
-
-            <!-- Pending Requests -->
-            <div class="bg-white rounded-2xl shadow-lg p-8 mt-4">
-                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
-                    <h1 class="text-xl font-bold text-[#007570] flex items-center">
-                        {{ __('Visitor Approvals') }}
-                        <span class="ml-3 inline-block text-sm font-medium text-black bg-[#FFCA00] px-3 py-1 rounded-full" id="pending-badge">
-                            {{ $stats['pending_count'] }} {{ __('Pending') }}
-                        </span>
-                    </h1>
-                    <button onclick="refreshAll()" class="text-sm border border-gray-400 text-gray-700 px-4 py-2 rounded hover:bg-gray-100 transition">
-                        <i class="fas fa-sync-alt mr-2"></i> {{ __('Refresh') }}
-                    </button>
-                </div>
-
-                <div id="visitor-container">
-                    @include('partials.visitor-list', ['visitors' => $pendingVisits ?? []])
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('hidden');
-    }
-</script>
-
-<!-- New script -->
-<script>
-    function approveVisitor(id) {
-        fetch('/sm/visits/' + id + '/approve', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            if (response.ok) {
-                refreshAll();
-            }
-        });
-    }
-
-    function denyVisitor(id) {
-        fetch('/sm/visits/' + id + '/deny', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            if (response.ok) {
-                refreshAll();
-            }
-        });
-    }
-
-    function refreshAll() {
-        fetch('/sm/visits/pending')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('visitor-container').innerHTML = data.html;
-                document.getElementById('pending-badge').textContent = data.pendingCount + ' Pending';
-            });
-    }
-</script>
-
-@endsection --}}

@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  laravel-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aatc-vms-app
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+    env_file:
+      - .env
+    networks:
+      - laravel-network
+    # Use host network to connect to local MySQL
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on: []
+    restart: unless-stopped
+
+networks:
+  laravel-network:
+    driver: bridge

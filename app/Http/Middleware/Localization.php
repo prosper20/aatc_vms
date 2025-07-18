@@ -22,13 +22,9 @@ class Localization
         //     App::setLocale(Session::get('locale'));
         // }
 
-        \Log::info('✅ Localization middleware hit');
-
         if (\Session::has('locale')) {
-            \Log::info('✅ Locale in session: ' . \Session::get('locale'));
+            // \Log::info('✅ Locale in session: ' . \Session::get('locale'));
             \App::setLocale(\Session::get('locale'));
-        } else {
-            \Log::info('❌ No locale in session');
         }
         return $next($request);
     }

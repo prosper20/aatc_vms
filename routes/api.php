@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\EmailController;
+
 Route::get('/api/visitors/lookup', function (Request $request) {
     $visitor = \App\Models\Visitor::where('email', $request->query('email'))->first();
 
@@ -12,3 +14,5 @@ Route::get('/api/visitors/lookup', function (Request $request) {
 
     return response()->json(['exists' => false]);
 });
+
+Route::post('/send-email', [EmailController::class, 'send'])->name('send.email');

@@ -17,6 +17,7 @@
         "vite": "^6.3.5"
     },
     "dependencies": {
+        "puppeteer": "^24.14.0",
         "tailwindcss": "^4.1.7"
     }
 }
