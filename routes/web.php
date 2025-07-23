@@ -26,6 +26,8 @@ use App\Http\Controllers\VisitorHistoryController;
 use App\Http\Controllers\PendingVisitsController;
 use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\ReceptionGuestController;
+use App\Http\Controllers\ReceptionHistoryController;
 
 use App\Mail\VisitApprovedEmail;
 
@@ -92,9 +94,17 @@ Route::prefix('reception')->name('reception.')->group(function () {
     Route::middleware(['auth:receptionist'])->group(function () {
         Route::get('/dashboard', [ReceptionDashboardController::class, 'index'])->name('dashboard');
     });
+    Route::get('/dashboard/guests', [ReceptionGuestController::class, 'index'])->name('dashboard.guests');
     Route::post('/search', [ReceptionDashboardController::class, 'search'])->name('search');
     Route::post('/check-in/{visit}', [ReceptionDashboardController::class, 'checkIn'])->name('checkin');
     Route::post('/check-out/{visit}', [ReceptionDashboardController::class, 'checkOut'])->name('checkout');
+
+    Route::post('/visits/invite', [StaffDashboardController::class, 'sendInvitation'])->name('dashboard.invite');
+    Route::get('/visits/{visit}/details', [StaffDashboardController::class, 'getVisitDetails'])->name('visits.details');
+    Route::get('/visits/{visit}', [ReceptionGuestController::class, 'show'])->name('visits.show');
+    Route::post('/visitor-history/export', [ReceptionHistoryController::class, 'export'])->name('history.export');
+    // Route::get('/visitor-history/export', [VisitorHistoryController::class, 'export'])->name('visitor-history.export.get');
+
 });
 
 Route::middleware(['auth:staff'])->group(function () {
