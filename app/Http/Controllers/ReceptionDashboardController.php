@@ -247,6 +247,109 @@ class ReceptionDashboardController extends Controller
 
         return response()->json($visits);
     }
+
+    public function getPassDetails(Visit $visit)
+    {
+        // Check if visitor already has a pass or access card
+        if ($visit->accessCard || $visit->visitorPass) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Visitor already has an access card or pass issued'
+            ]);
+        }
+
+        // Get available passes
+        $availablePasses = AccessCard::where('is_active', true)
+            ->where(function($query) {
+                $query->whereNull('issued_at')
+                    ->orWhere('valid_until', '<', now());
+            })
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'visitor' => $visit->visitor,
+            'staff' => $visit->staff,
+            'visit' => $visit,
+            'availablePasses' => $availablePasses
+        ]);
+    }
+
+    public function issuePass(Request $request, Visit $visit)
+    {
+        $validated = $request->validate([
+            'pass_id' => 'required|integer|exists:visitor_passes,id',
+            'valid_until' => 'required|date'
+        ]);
+
+        // Check if visitor already has a pass or access card
+        if ($visit->accessCard || $visit->visitorPass) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Visitor already has an access card or pass issued'
+            ]);
+        }
+
+        try {
+            // Update the pass record
+            $pass = AccessCard::find($validated['pass_id']);
+            $pass->update([
+                'issued_to' => $visit->visitor->name,
+                'issued_at' => now(),
+                'issued_by' => auth()->user()->name,
+                'valid_until' => $validated['valid_until'],
+                'is_active' => true
+            ]);
+
+            // Update the visit record
+            $visit->update([
+                'visitor_pass_id' => $validated['pass_id'],
+                'pass_issued_at' => now(),
+                'pass_issued_by' => auth()->user()->name
+            ]);
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function generatePass(Request $request)
+    {
+        try {
+            // Generate a unique serial number (example format: VP-2023-0001)
+            $lastPass = AccessCard::orderBy('id', 'desc')->first();
+            $nextId = $lastPass ? $lastPass->id + 1 : 1;
+            $serialNumber = 'VP-' . date('Y') . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+
+            $pass = AccessCard::create([
+                'serial_number' => $serialNumber,
+                'is_active' => true
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'pass' => $pass
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function printPass(Visit $visit)
+    {
+        if (!$visit->accessCard) {
+            abort(404, 'No pass issued for this visit');
+        }
+
+        return view('reception.print-pass', [
+            'visit' => $visit,
+            'pass' => $visit->visitorPass
+        ]);
+    }
 }
 
 

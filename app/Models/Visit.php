@@ -11,7 +11,7 @@ class Visit extends Model
         'floor_of_visit', 'checked_in_at', 'checked_out_at',
         'checkin_by', 'checkout_by', 'is_checked_in', 'is_checked_out',
         'arrived_at_gate', 'verification_passed', 'verification_message', 'verified_by',
-        'mode_of_arrival', 'plate_number', 'vehicle_type',
+        'mode_of_arrival', 'plate_number', 'vehicle_type', 'inquiry', 'notes',
         'access_card_id', 'card_issued_at', 'card_retrieved_at',
     ];
 

@@ -103,7 +103,7 @@
                                 @error('visit_time') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
-                            <div class="mb-6 sm:col-span-2">
+                            <div class="mb-6">
                                 <label for="floor" class="block text-sm font-medium text-gray-700 mb-2">Floor/Department *</label>
                                 <select wire:model="floor_of_visit" id="floor" required
                                         class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
@@ -113,6 +113,20 @@
                                     @endforeach
                                 </select>
                                 @error('floor_of_visit') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div class="mb-6">
+                                <label for="host" class="block text-sm font-medium text-gray-700 mb-2">Host</label>
+                                <select wire:model="host" id="host"
+                                        class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
+                                    <option value="">Select host</option>
+                                    <option value="Adebayo Johnson">Adebayo Johnson</option>
+                                    <option value="Chioma Eze">Chioma Eze</option>
+                                    <option value="Ibrahim Musa">Ibrahim Musa</option>
+                                    <option value="Ngozi Okafor">Ngozi Okafor</option>
+                                    <option value="Tunde Balogun">Tunde Balogun</option>
+                                </select>
+                                @error('host') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
                             <div class="mb-6 sm:col-span-2" wire:key="guest-{{ $currentGuestIndex }}">
                                 <label for="reason_type" class="block text-sm font-medium text-gray-700 mb-2">Reason for Visit *</label>
