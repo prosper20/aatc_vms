@@ -552,6 +552,13 @@ class ReceptionAccessCardController extends Controller
         $floor = $lines[0] ?? '';
         $wing = $lines[1] ?? '';
 
+        $floorNumber = (int) filter_var($floor, FILTER_SANITIZE_NUMBER_INT);
+
+        if ($floorNumber === 6 || $floorNumber === 9) {
+            $wing = '';
+        }
+
+
         return [
             'floor' => $floor,
             'wing' => $wing,

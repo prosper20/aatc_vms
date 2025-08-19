@@ -31,6 +31,7 @@ use App\Http\Controllers\ReceptionHistoryController;
 use App\Http\Controllers\ReceptionInviteController;
 use App\Http\Controllers\ReceptionAccessCardController;
 use App\Http\Controllers\VisitorPhotoController;
+use App\Http\Controllers\PageController;
 
 use App\Mail\VisitApprovedEmail;
 
@@ -48,12 +49,16 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/auth/okta/login', [LoginController::class, 'redirectToOkta'])->name('okta.login');
+Route::get('/auth/okta/callback', [LoginController::class, 'handleOktaCallback'])->name('okta.callback');
+// Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/hash/{password}', function ($password) {
     return Hash::make($password);
 });
 
+Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('privacy.policy');
+Route::get('/terms-of-service', [PageController::class, 'terms'])->name('terms.of.service');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::post('/home/submit-request', [HomeController::class, 'submitRequest'])->name('home.submit');
