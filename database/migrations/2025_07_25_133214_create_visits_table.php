@@ -25,6 +25,8 @@ return new class extends Migration {
             $table->enum('mode_of_arrival', ['vehicle', 'foot'])->nullable();
             $table->string('plate_number')->nullable();
             $table->enum('vehicle_type', ['drop-off', 'wait'])->nullable();
+            $table->text('inquiry')->nullable();
+            $table->text('notes')->nullable();
 
             // Check-in / Check-out
             $table->timestamp('checked_in_at')->nullable();

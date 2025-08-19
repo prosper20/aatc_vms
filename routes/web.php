@@ -28,6 +28,10 @@ use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ReceptionGuestController;
 use App\Http\Controllers\ReceptionHistoryController;
+use App\Http\Controllers\ReceptionInviteController;
+use App\Http\Controllers\ReceptionAccessCardController;
+use App\Http\Controllers\VisitorPhotoController;
+use App\Http\Controllers\PageController;
 
 use App\Mail\VisitApprovedEmail;
 
@@ -45,12 +49,16 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/auth/okta/login', [LoginController::class, 'redirectToOkta'])->name('okta.login');
+Route::get('/auth/okta/callback', [LoginController::class, 'handleOktaCallback'])->name('okta.callback');
+// Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/hash/{password}', function ($password) {
     return Hash::make($password);
 });
 
+Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('privacy.policy');
+Route::get('/terms-of-service', [PageController::class, 'terms'])->name('terms.of.service');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::post('/home/submit-request', [HomeController::class, 'submitRequest'])->name('home.submit');
@@ -99,11 +107,38 @@ Route::prefix('reception')->name('reception.')->group(function () {
     Route::post('/check-in/{visit}', [ReceptionDashboardController::class, 'checkIn'])->name('checkin');
     Route::post('/check-out/{visit}', [ReceptionDashboardController::class, 'checkOut'])->name('checkout');
 
-    Route::post('/visits/invite', [StaffDashboardController::class, 'sendInvitation'])->name('dashboard.invite');
-    Route::get('/visits/{visit}/details', [StaffDashboardController::class, 'getVisitDetails'])->name('visits.details');
+    Route::post('/visits/invite', [ReceptionInviteController::class, 'sendInvitation'])->name('dashboard.invite');
+    Route::get('/visits/{visit}/details', [ReceptionInviteController::class, 'getVisitDetails'])->name('visits.details');
     Route::get('/visits/{visit}', [ReceptionGuestController::class, 'show'])->name('visits.show');
     Route::post('/visitor-history/export', [ReceptionHistoryController::class, 'export'])->name('history.export');
     // Route::get('/visitor-history/export', [VisitorHistoryController::class, 'export'])->name('visitor-history.export.get');
+
+    // visitor pass routes
+    // Route::get('/visits/{visit}/pass-details', [ReceptionAccessCardController::class, 'getPassDetails'])->name('visits.pass-details');
+    // Route::post('/visits/{visit}/issue-pass', [ReceptionAccessCardController::class, 'issuePass'])->name('visits.issue-pass');
+    // Route::post('/visitor-passes/generate', [ReceptionAccessCardController::class, 'generatePass'])->name('visitor-passes.generate');
+    // Route::get('/visits/{visit}/print-pass', [ReceptionAccessCardController::class, 'printPass'])->name('visits.print-pass');
+
+    // Access Card Routes
+    // Route::get('/visits/{visit}/access-card-details', [ReceptionAccessCardController::class, 'getAccessCardDetails'])->name('visits.access-card-details');
+    // Route::post('/visits/{visit}/issue-access-card', [ReceptionAccessCardController::class, 'issueAccessCard'])->name('visits.issue-access-card');
+    // Route::get('/visits/{visit}/print-access-card', [ReceptionAccessCardController::class, 'printAccessCard'])->name('visits.print-access-card');
+
+    Route::get('/visits/{visit}/card-details', [ReceptionAccessCardController::class, 'getCardDetails']);
+    Route::post('/visits/{visit}/issue-card', [ReceptionAccessCardController::class, 'issueCard']);
+    Route::get('/visits/{visit}/print-details', [ReceptionAccessCardController::class, 'getPrintDetails']);
+    Route::get('/visits/{visit}/print-card', [ReceptionAccessCardController::class, 'printCard']);
+
+    // Visitor photo management routes
+    Route::get('/visitors/{visitor}/photo', [VisitorPhotoController::class, 'getPhoto']);
+    Route::post('/visitors/{visitor}/photo/upload', [VisitorPhotoController::class, 'uploadPhoto']);
+    Route::post('/visitors/{visitor}/photo/base64', [VisitorPhotoController::class, 'savePhotoFromBase64']);
+    Route::post('/visitors/{visitor}/photo/url', [VisitorPhotoController::class, 'savePhotoFromUrl']);
+    Route::delete('/visitors/{visitor}/photo', [VisitorPhotoController::class, 'deletePhoto']);
+
+    // Checkout Routes
+    Route::get('/visits/{visit}/checkout-details', [ReceptionAccessCardController::class, 'getCheckoutDetails'])->name('visits.checkout-details');
+    Route::post('/visits/{visit}/checkout', [ReceptionAccessCardController::class, 'checkout'])->name('visits.checkout');
 
 });
 

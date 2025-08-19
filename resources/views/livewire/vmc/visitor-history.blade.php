@@ -1,32 +1,35 @@
 <div>
-    <!-- Search Input (only shown on history tab) -->
-    <div class="mb-4 flex flex-col sm:flex-row w-full items-stretch sm:items-center justify-between gap-4"
-     {{-- x-data="{ showSearch: window.location.hash === '#history' }"
-     x-show="showSearch"
-     x-transition
-     @hashchange.window="showSearch = window.location.hash === '#history'" --}}
-     >
+    <!-- Search Input -->
+    <div class="mb-4 flex flex-col sm:flex-row w-full items-stretch sm:items-center justify-between gap-4">
+        <!-- Search Input -->
+        <div class="relative w-full sm:w-96 flex-grow sm:flex-grow-0">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <i class="fas fa-search"></i>
+            </div>
+            <input wire:model.live.debounce.300ms="search"
+                   type="text"
+                   class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors duration-150"
+                   placeholder="Search visitor history..."
+                   aria-label="Search visitor history"
+                   value="{{ $search }}">
 
-    <!-- Search Input (flex-grow on mobile, fixed width on desktop) -->
-    <div class="relative w-full sm:w-96 flex-grow sm:flex-grow-0">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-            <i class="fas fa-search"></i>
+            <!-- Clear search button -->
+            @if($search)
+                <button wire:click="$set('search', '')"
+                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            @endif
         </div>
-        <input wire:model.debounce.300ms="search"
-               type="text"
-               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors duration-150"
-               placeholder="Search visitor history..."
-               aria-label="Search visitor history">
-    </div>
 
-    <!-- Export Button (right-aligned on desktop, full width on mobile) -->
-    <button onclick="openModal()"
-            class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 text-sm font-medium bg-[#FFCA00] hover:bg-[#e0b200] rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FFCA00]"
-            aria-label="Export data">
-        <i class="fas fa-download mr-2"></i>
-        Export Data
-    </button>
-</div>
+        <!-- Export Button -->
+        <button onclick="openModal()"
+                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 text-sm font-medium bg-[#FFCA00] hover:bg-[#e0b200] rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FFCA00]"
+                aria-label="Export data">
+            <i class="fas fa-download mr-2"></i>
+            Export Data
+        </button>
+    </div>
 
     <!-- History Table -->
     <div class="overflow-x-auto">
@@ -39,7 +42,6 @@
                     <th class="px-4 py-3">Floor</th>
                     <th class="px-4 py-3">Visit Date</th>
                     <th class="px-4 py-3">Status</th>
-                    {{-- <th class="px-4 py-3">Checked Out</th> --}}
                     <th class="px-4 py-3">Actions</th>
                 </tr>
             </thead>
@@ -47,9 +49,9 @@
                 @forelse ($history as $visit)
                     <tr wire:key="visit-{{ $visit->id }}">
                         <td class="px-4 py-3">
-                            <div class="font-semibold">{{ $visit->visitor->name }}</div>
-                            <div class="text-xs text-gray-500">{{ $visit->visitor->email }}</div>
-                            <div class="text-xs text-gray-500">{{ $visit->visitor->phone }}</div>
+                            <div class="font-semibold">{{ $visit->visitor->name ?? 'N/A' }}</div>
+                            <div class="text-xs text-gray-500">{{ $visit->visitor->email ?? 'N/A' }}</div>
+                            <div class="text-xs text-gray-500">{{ $visit->visitor->phone ?? 'N/A' }}</div>
                         </td>
                         <td class="px-4 py-3">{{ $visit->visitor->organization ?? '-' }}</td>
                         <td class="px-4 py-3">{{ $visit->reason ?? '-' }}</td>
@@ -75,22 +77,31 @@
                                 {{ ucfirst($visit->status) }}
                             </span>
                         </td>
-                        {{-- <td class="px-4 py-3">
-                            <span class="text-sm">
-                                {{ $visit->is_checked_out ? 'Yes' : 'No' }}
-                            </span>
-                        </td> --}}
                         <td class="px-4 py-3">
                             <a href="{{ route('reception.visits.show', $visit->id) }}"
-                            class="text-[#FFCA00] hover:text-[#e0b200] transition-colors duration-200">
-                            View Details
+                               class="text-[#FFCA00] hover:text-[#e0b200] transition-colors duration-200">
+                                View Details
                             </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-gray-400">
-                            No visitor history found {{ $search ? 'matching "' . $search . '"' : '' }}
+                        <td colspan="7" class="text-center py-8 text-gray-400">
+                            @if($search)
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-search text-2xl mb-2"></i>
+                                    <p>No visitor history found matching "<strong>{{ $search }}</strong>"</p>
+                                    <button wire:click="$set('search', '')"
+                                            class="mt-2 text-teal-600 hover:text-teal-800 text-sm underline">
+                                        Clear search
+                                    </button>
+                                </div>
+                            @else
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-history text-2xl mb-2"></i>
+                                    <p>No visitor history found</p>
+                                </div>
+                            @endif
                         </td>
                     </tr>
                 @endforelse
@@ -98,8 +109,11 @@
         </table>
 
         <!-- Pagination -->
-        <div class="mt-4">
-            {{ $history->links() }}
-        </div>
+        @if($history->hasPages())
+            <div class="mt-4">
+                {{ $history->links() }}
+            </div>
+        @endif
     </div>
 </div>
+

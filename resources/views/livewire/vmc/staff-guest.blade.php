@@ -46,12 +46,34 @@
                             Guest Information
                         </h3>
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div class="mb-6">
+                            {{-- <div class="mb-6">
                                 <label for="guest_email" class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
                                 <input type="email" wire:model="email" id="guest_email" required
                                        class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
                                        placeholder="guest@example.com">
                                 @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div> --}}
+
+                            <div class="mb-6">
+                                <label for="guest_email" class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                                <input type="email" wire:model.live="email" id="guest_email" required
+                                       {{-- wire:change="updatedEmail" --}}
+                                       class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white"
+                                       placeholder="guest@example.com">
+                                @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+
+                                @if($emailSearching)
+                                    <div class="mt-2 text-sm text-gray-500">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i> Checking visitor...
+                                    </div>
+                                @endif
+
+                                @if($showVisitorFound)
+                                    <div class="mt-2 text-sm text-green-600 flex items-center">
+                                        <i class="fas fa-check-circle mr-2"></i>
+                                        Visitor found
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="mb-6">
@@ -120,6 +142,18 @@
                                 <select wire:model="host" id="host" required
                                         class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
                                     <option value="">Select host</option>
+                                    @foreach($hosts as $hostOption)
+                                        <option value="{{ $hostOption['id'] }}">{{ $hostOption['name'] }}</option>
+                                    @endforeach
+                                </select>
+                                @error('host') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            {{-- <div class="mb-6">
+                                <label for="host" class="block text-sm font-medium text-gray-700 mb-2">Host *</label>
+                                <select wire:model="host" id="host" required
+                                        class="w-full py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 focus:outline-none focus:border-emerald-300 focus:bg-white">
+                                    <option value="">Select host</option>
                                     <option value="Adebayo Johnson">Adebayo Johnson</option>
                                     <option value="Chioma Eze">Chioma Eze</option>
                                     <option value="Ibrahim Musa">Ibrahim Musa</option>
@@ -127,8 +161,7 @@
                                     <option value="Tunde Balogun">Tunde Balogun</option>
                                 </select>
                                 @error('host') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                            </div>
-
+                            </div> --}}
 
                             <div class="mb-6 sm:col-span-2" wire:key="guest-{{ $currentGuestIndex }}">
                                 <label for="reason_type" class="block text-sm font-medium text-gray-700 mb-2">Reason for Visit *</label>
@@ -276,4 +309,4 @@
             }, 300);
         }
     }
-    </script>
+</script>

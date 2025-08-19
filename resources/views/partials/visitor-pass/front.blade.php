@@ -1,0 +1,54 @@
+<div class="mx-auto bg-white w-80 h-[500px] shadow-xl flex overflow-hidden relative pass-body">
+    <!-- Corner Decorations -->
+    <div class="absolute top-0 right-0 w-[30px] h-[30px] border-t-2 border-r-2 border-[#0d9488]"></div>
+    <div class="absolute bottom-0 right-0 w-[30px] h-[30px] border-b-2 border-r-2 border-[#0d9488]"></div>
+
+    <!-- Left Sidebar -->
+    <div class="bg-[#0d9488] w-16 flex items-center justify-center relative overflow-hidden">
+        <div class="transform rotate-180 [writing-mode:vertical-lr] [text-orientation:mixed] text-white font-bold text-3xl tracking-wider">
+          VISITOR PASS
+        </div>
+        <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48cmVjdCB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMzAgMTVMMTUgMzAgMzAgNDUgNDUgMzB6IiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSJub25lIi8+PC9zdmc+')]"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-6 relative flex flex-col">
+      <!-- Logo -->
+      <div class="flex items-center justify-center mb-8">
+        <img src="{{ asset('assets/Picture2.jpeg') }}" alt="Top Logo" class="max-w-[180px] h-auto" />
+      </div>
+
+      <!-- Content -->
+      <div class="p-4 flex-1 flex flex-col z-20 justify-center">
+        <!-- Venue Information -->
+        <div class="mb-8 text-center">
+          <div class="text-2xl font-bold text-gray-800 mb-3 venue-font text-center">
+            Venue:
+            <div>{{ $decoded['floor'] ?? '---' }}</div>
+            <div>{{ $decoded['wing'] ?? '' }}</div>
+          </div>
+          <div class="text-2xl font-bold text-gray-800 venue-font text-center">
+            Pass ID: {{ $decoded['pass_id'] ?? '---' }}
+          </div>
+        </div>
+
+        <!-- Decorative divider -->
+        <div class="w-3/4 h-[2px] bg-gradient-to-r from-transparent via-[#0d9488] to-transparent mx-auto my-6 rounded-full"></div>
+
+        <!-- Important Notice -->
+        <div class="text-center z-20">
+          <div class="text-lg font-semibold text-gray-800 leading-relaxed text-font">
+            Must be visibly worn at all times while on premises
+          </div>
+        </div>
+      </div>
+
+      <!-- Logo at Bottom -->
+      <div class="absolute bottom-0 right-0 z-10">
+        <img src="{{ asset('assets/Picture-nobg.png') }}" alt="Bottom Logo" class="h-[8rem] opacity-30" />
+      </div>
+
+      <!-- Subtle pattern overlay -->
+      <div class="absolute inset-0 opacity-5 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48cmVjdCB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMzAgMTVMMTUgMzAgMzAgNDUgNDUgMzB6IiBzdHJva2U9IiMwZDk0ODgiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSJub25lIi8+PC9zdmc+')]"></div>
+    </div>
+  </div>

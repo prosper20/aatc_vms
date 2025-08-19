@@ -25,30 +25,32 @@ class VisitorHistory extends Component
     {
         $staffId = auth('staff')->id();
 
-        $history = Visit::with(['visitor', 'staff'])
+        $query = Visit::with(['visitor', 'staff'])
             ->where('staff_id', $staffId)
             ->where(function ($query) {
                 $query->where('visit_date', '<', Carbon::today())
                       ->orWhere('status', 'rejected')
                       ->orWhere('is_checked_out', true);
-            })
-            ->when($this->search, function ($query) {
-                $query->where(function($q) {
-                    $q->whereHas('visitor', function($q) {
-                        $q->where('name', 'like', '%'.$this->search.'%')
-                          ->orWhere('email', 'like', '%'.$this->search.'%')
-                          ->orWhere('phone', 'like', '%'.$this->search.'%');
-                    })
-                    ->orWhereHas('staff', function($q) {
-                        $q->where('name', 'like', '%'.$this->search.'%');
-                    })
-                    ->orWhere('reason', 'like', '%'.$this->search.'%')
-                    ->orWhere('floor_of_visit', 'like', '%'.$this->search.'%');
-                });
-            })
-            ->orderByDesc('visit_date')
-            ->orderByDesc('created_at')
-            ->paginate(10);
+            });
+
+        if ($this->search) {
+            $query->where(function($q) {
+                $q->whereHas('visitor', function($visitorQuery) {
+                    $visitorQuery->where('name', 'like', '%'.$this->search.'%')
+                                 ->orWhere('email', 'like', '%'.$this->search.'%')
+                                 ->orWhere('phone', 'like', '%'.$this->search.'%');
+                })
+                ->orWhereHas('staff', function($staffQuery) {
+                    $staffQuery->where('name', 'like', '%'.$this->search.'%');
+                })
+                ->orWhere('reason', 'like', '%'.$this->search.'%')
+                ->orWhere('floor_of_visit', 'like', '%'.$this->search.'%');
+            });
+        }
+
+        $history = $query->orderByDesc('visit_date')
+                         ->orderByDesc('created_at')
+                         ->paginate(10);
 
         return view('livewire.vmc.visitor-history', [
             'history' => $history

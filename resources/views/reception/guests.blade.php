@@ -46,13 +46,13 @@
             <div class="border-b border-gray-200">
                 <nav class="flex space-x-8" aria-label="Tabs">
                     <button onclick="showTab('walk-in')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-[#fecd01] text-[#007570]" data-tab="walk-in" data-state="active">
-                        Walk-in Guest
+                        Walk-in <span class="hidden sm:inline"> Guest</span>
                     </button>
                     <button onclick="showTab('staff-guest')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="staff-guest">
-                        Staff Guests
+                        Staff <span class="hidden sm:inline"> Guests</span>
                     </button>
                     <button onclick="showTab('history')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="history">
-                        Visitor History
+                        <span class="hidden sm:inline">Visitor </span> History
                     </button>
                 </nav>
             </div>
@@ -396,20 +396,6 @@
                 body: JSON.stringify(payload)
             });
 
-            // const json = await res.json();
-
-            // if (json.success) {
-            //     if (json.format === 'csv') {
-            //         downloadCSV(json.data);
-            //     } else if (json.format === 'excel') {
-            //         downloadExcel(json.data);
-            //     } else if (json.format === 'pdf') {
-            //         downloadPDF(json.data);
-            //     }
-            //     showNotification('Export successful!', 'success');
-            // } else {
-            //     showNotification(json.message || 'Export failed.', 'error');
-            // }
             if (payload.export_format === 'pdf') {
                 const blob = await res.blob();
                 const url = window.URL.createObjectURL(blob);
@@ -449,82 +435,6 @@
         }
     }
 
-
-//     function submitExportForm() {
-//     const form = document.getElementById('export-form');
-//     const formData = new FormData(form);
-
-//     // Show loading state
-//     const exportButton = document.querySelector('[onclick="submitExportForm()"]');
-//     const originalText = exportButton.textContent;
-//     exportButton.textContent = 'Exporting...';
-//     exportButton.disabled = true;
-
-//     // Validate date range
-//     const startDate = formData.get('start_date');
-//     const endDate = formData.get('end_date');
-
-//     if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
-//         alert('Start date must be before or equal to end date.');
-//         exportButton.textContent = originalText;
-//         exportButton.disabled = false;
-//         return;
-//     }
-
-//     // Check if at least one status filter is selected
-//     const includeCheckedIn = formData.get('include_checked_in');
-//     const includeCheckedOut = formData.get('include_checked_out');
-//     const includePending = formData.get('include_pending');
-
-//     if (!includeCheckedIn && !includeCheckedOut && !includePending) {
-//         alert('Please select at least one visitor status to include in the export.');
-//         exportButton.textContent = originalText;
-//         exportButton.disabled = false;
-//         return;
-//     }
-
-//     // Create URL with parameters
-//     const params = new URLSearchParams();
-
-//     // Add all form fields to URL parameters
-//     for (let [key, value] of formData.entries()) {
-//         if (value) {
-//             params.append(key, value);
-//         }
-//     }
-
-//     // Handle checkboxes that aren't checked (they won't be in FormData)
-//     if (!formData.has('include_checked_in')) {
-//         params.append('include_checked_in', '0');
-//     }
-//     if (!formData.has('include_checked_out')) {
-//         params.append('include_checked_out', '0');
-//     }
-//     if (!formData.has('include_pending')) {
-//         params.append('include_pending', '0');
-//     }
-
-//     // Create download link
-//     const exportUrl = '/reception/visitor-history/export?' + params.toString();
-
-//     // Create a temporary link element and trigger download
-//     const link = document.createElement('a');
-//     link.href = exportUrl;
-//     link.style.display = 'none';
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-
-//     // Reset button state
-//     setTimeout(() => {
-//         exportButton.textContent = originalText;
-//         exportButton.disabled = false;
-//         closeExportModal();
-
-//         // Show success message
-//         showNotification('Export started! Your download will begin shortly.', 'success');
-//     }, 1000);
-// }
 
 // Add notification function
 function showNotification(message, type = 'info') {

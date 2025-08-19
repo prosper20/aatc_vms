@@ -36,13 +36,13 @@
         <div class="border-b border-gray-200">
             <nav class="flex space-x-8" aria-label="Tabs">
                 <button onclick="showTab('invite')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-[#fecd01] text-[#007570]" data-tab="invite">
-                    Invite Guest
+                    Invite <span class="hidden sm:inline"> Guest</span>
                 </button>
                 <button onclick="showTab('active')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="active">
-                    Active Visits
+                    Active <span class="hidden sm:inline"> Visits</span>
                 </button>
                 <button onclick="showTab('history')" class="tab-button py-4 px-6 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="history">
-                    Visit History
+                    <span class="hidden sm:inline">Visit </span> History
                 </button>
             </nav>
         </div>
